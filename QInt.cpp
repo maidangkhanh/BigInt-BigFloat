@@ -4,16 +4,24 @@
 #include <vector>
 #include <cmath>
 
+#define SIZE 128
+
 
 using namespace std;
+
+void OneComplement(bool bin[], unsigned int size)
+{
+	unsigned int i = 0;
+
+	for (; i < size; i++)
+		bin[i] = !bin[i];
+}
 
 void TwoComplement(bool bin[], unsigned int size)
 {
 	unsigned int i = 0;
-	
-	// lấy bù 1
-	for (; i < size; i++)
-		bin[i] = !bin[i]; 
+
+	OneComplement(bin, size);
 
 	// cộng 1
 	i = 0;
@@ -30,6 +38,16 @@ bool IsNumber(string s)
 	unsigned int i = s.front() == '-' ? 1 : 0;
 	while (i < s.length() && isdigit(s[i])) ++i;
 	return !s.empty() && i == s.length();
+}
+
+void CleanUpString(string &str)
+{
+	if (!str.empty() && str.front() != '-')
+		while (!str.empty() && *str.begin() == '0')
+			str.erase(str.begin());
+	else
+		while (!str.empty() && *str.begin() + 1 == '0')
+			str.erase(str.begin() + 1);
 }
 
 // chia chuoi so cho 2
@@ -52,14 +70,21 @@ string DivideBy2(const string &s)
 		temp %= 2;
 	}
 
-	if (!str.empty() && str.front() != '-')
-		while (!str.empty() && *str.begin() == '0')
-			str.erase(str.begin());
-	else
-		while (!str.empty() && *str.begin() + 1 == '0')
-			str.erase(str.begin() + 1);
+	CleanUpString(str);
 
 	return str;
+}
+
+void StringToBinary(string &s, bool bin[])
+{
+	unsigned int i = 0;
+	while (!s.empty() && i < SIZE - 1)
+	{
+		// chia chuỗi số, lưu số dư vào chuỗi nhị phân
+		int last = s.back() - '0';
+		bin[i++] = last % 2;
+		s = DivideBy2(s);
+	}
 }
 
 void ScanQInt(QInt &x)
@@ -67,26 +92,20 @@ void ScanQInt(QInt &x)
 	string s;
 	cin >> s;
 	if (IsNumber(s)) {
-		bool bin[128] = { false };
+		bool bin[SIZE] = { false };
 		unsigned int i = 0;
 		char sign = s.front();
 
-		while (!s.empty() && i < 127)
-		{
-			// chia chuỗi số, lưu số dư vào chuỗi nhị phân
-			int last = s.back() - '0';
-			bin[i++] = last % 2;
-			s = DivideBy2(s);
-		}
+		StringToBinary(s, bin);
 
 		// nếu chuỗi số âm thì lấy bù 2 của dãy nhị phân bin
 		if (sign == '-')  // BUG
-			TwoComplement(bin, 128);
+			TwoComplement(bin, SIZE);
 
 		for (i = 0; i < 4; i++)
 			x.data[i] = 0;
 
-		for (i = 0; i < 128; i++)			
+		for (i = 0; i < SIZE; i++)			
 			x.data[i / 32] |= (bin[i] << i);
 	}
 }
@@ -130,36 +149,44 @@ string SumNumberString(string s1, string s2)
 	return value;
 }
 
-void PrintQInt(QInt x)
+string BinaryToString(bool bin[], string convert[])
 {
-	bool bin[128] = { false };
-	unsigned int i;
+	string s;
 
-	for (i = 0; i < 128; i++)
-		bin[i] = (x.data[i / 32] >> i) & 1;
-
-	// lưu giá trị của pow(2,i);
-	string convert[127]; 
-	convert[0] = '1';
-
-	// convert[i] = 2 * convert[i - 1];
-	for (i = 1; i < 127; i++)
-		convert[i] = SumNumberString(convert[i - 1], convert[i - 1]);
-	
-	string output;
-
-	if (bin[127] == 1)
+	if (bin[SIZE - 1] == 1)
 	{
-		output.push_back('-');
-		TwoComplement(bin,128);
+		s.push_back('-');
+		TwoComplement(bin, SIZE);
 	}
 
 	string temp = "0";
-	for (i = 0; i < 127; i++)
+	for (unsigned int i = 0; i < SIZE - 1; i++)
 		if (bin[i])
 			temp = SumNumberString(temp, convert[i]);
 
-	output.append(temp);
+	s.append(temp);
+
+	return s;
+}
+
+void PrintQInt(QInt x)
+{
+	bool bin[SIZE] = { false };
+	unsigned int i;
+	string output;
+
+	for (i = 0; i < SIZE; i++)
+		bin[i] = (x.data[i / 32] >> i) & 1;
+
+	// lưu giá trị của pow(2,i);
+	string convert[SIZE-1]; 
+	convert[0] = '1';
+
+	// convert[i] = 2 * convert[i - 1];
+	for (i = 1; i < SIZE-1; i++)
+		convert[i] = SumNumberString(convert[i - 1], convert[i - 1]);
+	
+	output = BinaryToString(bin, convert);
 
 	cout << output << endl;
 }
