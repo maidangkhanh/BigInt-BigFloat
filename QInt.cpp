@@ -169,7 +169,7 @@ QInt BinToDec(bool *bin)
 	return x;
 }
 
-//Possible memory leak
+//Possible memory leak, remember to delete
 bool* DecToBin(QInt x)
 {
 	bool* bin = new bool[SIZE];
@@ -346,7 +346,35 @@ void PrintQInt(QInt x)
 	cout << output << endl;
 }
 
-void test(QInt x)
+
+QInt operator+ (const QInt &a, const QInt &b)
 {
-	cout << DecToHex(x);
+	bool *bin1 = DecToBin(a);
+	bool *bin2 = DecToBin(b);
+	bool bin[SIZE];
+
+	for (unsigned int i = 0; i < SIZE; i++)
+	{
+		if (bin1[i] && bin2[i])
+		{
+			unsigned int j = i;
+
+			bin1[j] ^= bin2[j];
+
+			while (bin1[j] == 0 && j < SIZE - 1)
+			{
+				bin1[j + 1] ^= 1;
+				j++;
+			}
+			bin[i] = bin1[i];
+			continue;
+		}
+		bin1[i] ^= bin2[i];
+		bin[i] = bin1[i];
+	}
+
+	delete[]bin1;
+	delete[]bin2;
+
+	return BinToDec(bin);
 }
