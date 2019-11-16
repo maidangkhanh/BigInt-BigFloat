@@ -12,3 +12,4 @@ QInt BinToDec(bool *bin);
 std::string BinToHex(bool *bin);
 std::string DecToHex(QInt x);
 QInt operator+ (const QInt &a, const QInt &b);
+QInt operator-(const QInt &a, const QInt &b);

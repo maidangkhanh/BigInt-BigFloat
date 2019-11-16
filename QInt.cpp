@@ -346,7 +346,6 @@ void PrintQInt(QInt x)
 	cout << output << endl;
 }
 
-
 QInt operator+ (const QInt &a, const QInt &b)
 {
 	bool *bin1 = DecToBin(a);
@@ -377,4 +376,11 @@ QInt operator+ (const QInt &a, const QInt &b)
 	delete[]bin2;
 
 	return BinToDec(bin);
+}
+
+QInt operator-(const QInt &a, const QInt &b)
+{
+	bool *bin2 = DecToBin(b);
+	TwoComplement(bin2, SIZE);
+	return a + BinToDec(bin2);
 }
