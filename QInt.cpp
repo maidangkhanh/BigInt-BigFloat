@@ -343,7 +343,7 @@ void PrintQInt(QInt x)
 	output = BinaryToString(bin, convert);
 	delete[]convert;
 
-	cout << output << endl;
+	cout << output;
 }
 
 QInt operator+ (const QInt &a, const QInt &b)
@@ -383,4 +383,28 @@ QInt operator-(const QInt &a, const QInt &b)
 	bool *bin2 = DecToBin(b);
 	TwoComplement(bin2, SIZE);
 	return a + BinToDec(bin2);
+}
+
+QInt operator*(const QInt &a, const QInt &b)
+{
+	bool* bin1 = DecToBin(a);
+	bool* bin2 = DecToBin(b);
+	QInt x;
+
+	for (unsigned int i = 0; i < SIZE; i++)
+	{
+		if (bin2[i])
+		{
+			unsigned int j;
+			bool bin[SIZE];
+			for (j = 0; j < i; j++)
+				bin[j] = 0;
+			for (j = i; j < SIZE; j++)
+				bin[j] = bin1[j - i];
+
+			x = x + BinToDec(bin);
+		}
+	}
+
+	return x;
 }
