@@ -12,6 +12,9 @@ public:
 	static QInt BinToDec(bool *bin);
 	static std::string BinToHex(bool *bin);
 	std::string DecToHex();
+	friend QInt operator&(const QInt& a, const QInt& b);
+	friend QInt operator|(const QInt& a, const QInt& b);
+	friend QInt operator^(const QInt& a, const QInt& b);
 private:
 	unsigned int data[4];
 };

@@ -421,3 +421,33 @@ QInt operator+=(QInt &a, const QInt &b)
 	a = a + b;
 	return a;
 }
+
+QInt operator &(const QInt& a, const QInt& b)
+{
+	QInt temp;
+	for (int i = 0; i < 4; i++)
+	{
+		temp.data[i] = a.data[i] & b.data[i];
+	}
+	return temp;
+}
+
+QInt operator |(const QInt& a, const QInt& b)
+{
+	QInt temp;
+	for (int i = 0; i < 4; i++)
+	{
+		temp.data[i] = a.data[i] | b.data[i];
+	}
+	return temp;
+}
+
+QInt operator ^(const QInt& a, const QInt& b)
+{
+	QInt temp;
+	for (int i = 0; i < 4; i++)
+	{
+		temp.data[i] = a.data[i] ^ b.data[i];
+	}
+	return temp;
+}
