@@ -451,3 +451,13 @@ QInt operator ^(const QInt& a, const QInt& b)
 	}
 	return temp;
 }
+
+QInt QInt::operator~()
+{
+	QInt temp;
+	for (int i = 0; i < 4; i++)
+	{
+		temp.data[i] = ~this->data[i];
+	}
+	return temp;
+}

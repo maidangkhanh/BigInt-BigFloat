@@ -15,6 +15,7 @@ public:
 	friend QInt operator&(const QInt& a, const QInt& b);
 	friend QInt operator|(const QInt& a, const QInt& b);
 	friend QInt operator^(const QInt& a, const QInt& b);
+	QInt operator~();
 private:
 	unsigned int data[4];
 };
