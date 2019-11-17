@@ -159,7 +159,14 @@ string BinaryToString(bool bin[], string convert[])
 	return s;
 }
 
-QInt BinToDec(bool *bin)
+
+QInt::QInt()
+{
+	for (unsigned int i = 0; i < 4; i++)
+		data[i] = 0;
+}
+
+QInt QInt::BinToDec(bool *bin)
 {
 	QInt x;
 
@@ -170,20 +177,20 @@ QInt BinToDec(bool *bin)
 }
 
 //Possible memory leak, remember to delete
-bool* DecToBin(QInt x)
+bool* QInt::DecToBin() const
 {
 	bool* bin = new bool[SIZE];
 
 	for (unsigned i = 0; i < SIZE; i++)
 	{
 		bin[i] = false;
-		bin[i] = (x.data[i / 32] >> i) & 1;
+		bin[i] = (this->data[i / 32] >> i) & 1;
 	}
 
 	return bin;
 }
 
-string BinToHex(bool *bin)
+string QInt::BinToHex(bool *bin)
 {
 	string hex;
 
@@ -298,15 +305,15 @@ string BinToHex(bool *bin)
 	return hex;
 }
 
-string DecToHex(QInt x)
+string QInt::DecToHex()
 {
-	bool *bin = DecToBin(x);
+	bool *bin = this->DecToBin();
 	string hex = BinToHex(bin);
 	delete[]bin;
 	return hex;
 }
 
-void ScanQInt(QInt &x)
+void QInt::ScanQInt()
 {
 	string s;
 	cin >> s;
@@ -322,20 +329,20 @@ void ScanQInt(QInt &x)
 			TwoComplement(bin, SIZE);
 
 		for (i = 0; i < 4; i++)
-			x.data[i] = 0;
+			this->data[i] = 0;
 
-		x = BinToDec(bin);
+		*this = BinToDec(bin);
 	}
 }
 
-void PrintQInt(QInt x)
+void QInt::PrintQInt()
 {
 	bool bin[SIZE] = { false };
 	unsigned int i;
 	string output;
 
 	for (i = 0; i < SIZE; i++)
-		bin[i] = DecToBin(x)[i];
+		bin[i] = this->DecToBin()[i];
 
 	// lưu giá trị của pow(2,i);
 	string *convert = CreateConversion(SIZE - 1);
@@ -348,8 +355,8 @@ void PrintQInt(QInt x)
 
 QInt operator+ (const QInt &a, const QInt &b)
 {
-	bool *bin1 = DecToBin(a);
-	bool *bin2 = DecToBin(b);
+	bool *bin1 = a.DecToBin();
+	bool *bin2 = b.DecToBin();
 	bool bin[SIZE];
 
 	for (unsigned int i = 0; i < SIZE; i++)
@@ -375,20 +382,20 @@ QInt operator+ (const QInt &a, const QInt &b)
 	delete[]bin1;
 	delete[]bin2;
 
-	return BinToDec(bin);
+	return QInt::BinToDec(bin);
 }
 
 QInt operator-(const QInt &a, const QInt &b)
 {
-	bool *bin2 = DecToBin(b);
+	bool *bin2 = b.DecToBin();
 	TwoComplement(bin2, SIZE);
-	return a + BinToDec(bin2);
+	return a + QInt::BinToDec(bin2);
 }
 
 QInt operator*(const QInt &a, const QInt &b)
 {
-	bool* bin1 = DecToBin(a);
-	bool* bin2 = DecToBin(b);
+	bool* bin1 = a.DecToBin();
+	bool* bin2 = b.DecToBin();
 	QInt x;
 
 	for (unsigned int i = 0; i < SIZE; i++)
@@ -402,9 +409,15 @@ QInt operator*(const QInt &a, const QInt &b)
 			for (j = i; j < SIZE; j++)
 				bin[j] = bin1[j - i];
 
-			x = x + BinToDec(bin);
+			x = x + QInt::BinToDec(bin);
 		}
 	}
 
 	return x;
+}
+
+QInt operator+=(QInt &a, const QInt &b)
+{
+	a = a + b;
+	return a;
 }

@@ -1,16 +1,22 @@
 #pragma once
 #include <string>
 
-struct QInt {
-	int data[4] = { 0 };
+class QInt {
+
+public:
+	QInt();
+
+	void ScanQInt();
+	void PrintQInt();
+	bool* DecToBin() const;
+	static QInt BinToDec(bool *bin);
+	static std::string BinToHex(bool *bin);
+	std::string DecToHex();
+private:
+	unsigned int data[4];
 };
 
-void ScanQInt(QInt &x);
-void PrintQInt(QInt x);
-bool* DecToBin(QInt x);
-QInt BinToDec(bool *bin);
-std::string BinToHex(bool *bin);
-std::string DecToHex(QInt x);
-QInt operator+ (const QInt &a, const QInt &b);
+
+QInt operator+(const QInt &a, const QInt &b);
 QInt operator-(const QInt &a, const QInt &b);
 QInt operator*(const QInt &a, const QInt &b);
