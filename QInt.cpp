@@ -461,3 +461,42 @@ QInt QInt::operator~()
 	}
 	return temp;
 }
+QInt QInt::operator=(const QInt& a)
+{
+	if (this != &a) {
+		for (int i = 0; i < 4; i++) {
+			this->data[i] = a.data[i];
+		}
+	}
+	return *this;
+}
+bool QInt::operator>(const QInt& a)
+{
+	for (int i = 0; i < 4; i++) {
+		return this->data[i] > a.data[i];
+	}
+}
+bool QInt::operator>=(const QInt& a)
+{
+	for (int i = 0; i < 4; i++) {
+		return this->data[i] >= a.data[i];
+	}
+}
+bool QInt::operator<(const QInt& a)
+{
+	for (int i = 0; i < 4; i++) {
+		return this->data[i] < a.data[i];
+	}
+}
+bool QInt::operator<=(const QInt& a)
+{
+	for (int i = 0; i < 4; i++) {
+		return this->data[i] <= a.data[i];
+	}
+}
+bool QInt::operator==(const QInt& a)
+{
+	for (int i = 0; i < 4; i++) {
+		return this->data[i] == a.data[i];
+	}
+}
