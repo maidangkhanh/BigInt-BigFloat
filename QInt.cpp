@@ -452,6 +452,40 @@ QInt operator ^(const QInt& a, const QInt& b)
 	return temp;
 }
 
+QInt operator << (const QInt& a, const QInt& b)
+{
+	QInt temp = a;
+	QInt one;
+	bool c[3];
+	QInt i;
+	const uint64_t max = pow(2, 31);
+	string bit1 = "00000000000000000000000000000001";
+	uint32_t mask = stoul(bit1, nullptr, 2);
+	for (i; i < b; i += one)
+	{
+		temp.data[0] <<= 1;
+		check[0] = (temp.data[1] >= max) ? true : false;
+		temp.data[1] <<= 1;
+		check[1] = (temp.data[2] >= max) ? true : false;
+		temp.data[2] <<= 1;
+		check[2] = (temp.data[3] >= max) ? true : false;
+		temp.data[3] <<= 1;
+
+		if (check[0]) 
+		{
+			temp.data[0] |= mask;
+		}
+		if (check[1]) 
+		{
+			temp.data[1] |= mask;
+		}
+		if (check[2]) 
+		{
+			temp.data[2] |= mask;
+		}
+	}
+}
+
 QInt QInt::operator~()
 {
 	QInt temp;
