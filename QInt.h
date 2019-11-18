@@ -15,6 +15,8 @@ public:
 	friend QInt operator&(const QInt& a, const QInt& b);
 	friend QInt operator|(const QInt& a, const QInt& b);
 	friend QInt operator^(const QInt& a, const QInt& b);
+	friend QInt operator<<(const QInt& a, const QInt& b);
+	friend QInt operator>>(const QInt& a, const QInt& b);
 	QInt operator~();
 	QInt operator=(const QInt& a);
 	bool operator>(const QInt& a);
