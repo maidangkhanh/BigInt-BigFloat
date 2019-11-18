@@ -5,7 +5,7 @@ class QInt {
 
 public:
 	QInt();
-
+	QInt(std::string decimal);
 	void ScanQInt();
 	void PrintQInt();
 	bool* DecToBin() const;
@@ -25,7 +25,7 @@ public:
 	bool operator<=(const QInt& a);
 	bool operator==(const QInt& a);
 private:
-	unsigned int data[4];
+	uint32_t data[4];
 };
 
 
