@@ -32,3 +32,4 @@ private:
 QInt operator+(const QInt &a, const QInt &b);
 QInt operator-(const QInt &a, const QInt &b);
 QInt operator*(const QInt &a, const QInt &b);
+QInt operator/(const QInt &a, const QInt &b);

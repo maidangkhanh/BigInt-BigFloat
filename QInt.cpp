@@ -32,6 +32,28 @@ void TwoComplement(bool bin[], uint32_t size)
 	}
 }
 
+bool* SumBinary(bool* a, bool *b)
+{
+	for (uint32_t i = 0; i < SIZE; i++)
+	{
+		if (a[i] && b[i])
+		{
+			uint32_t j = i;
+
+			a[j] ^= b[j];
+
+			while (a[j] == 0 && j < SIZE - 1)
+			{
+				a[j + 1] ^= 1;
+				j++;
+			}
+			continue;
+		}
+		a[i] ^= b[i];
+	}
+	return a;
+}
+
 bool IsNumber(string s)
 {
 	uint32_t i = s.front() == '-' ? 1 : 0;
@@ -369,32 +391,13 @@ QInt operator+ (const QInt &a, const QInt &b)
 {
 	bool *bin1 = a.DecToBin();
 	bool *bin2 = b.DecToBin();
-	bool bin[SIZE];
 
-	for (uint32_t i = 0; i < SIZE; i++)
-	{
-		if (bin1[i] && bin2[i])
-		{
-			uint32_t j = i;
-
-			bin1[j] ^= bin2[j];
-
-			while (bin1[j] == 0 && j < SIZE - 1)
-			{
-				bin1[j + 1] ^= 1;
-				j++;
-			}
-			bin[i] = bin1[i];
-			continue;
-		}
-		bin1[i] ^= bin2[i];
-		bin[i] = bin1[i];
-	}
+	QInt x =QInt::BinToDec(SumBinary(bin1, bin2));
 
 	delete[]bin1;
 	delete[]bin2;
 
-	return QInt::BinToDec(bin);
+	return x;
 }
 
 QInt operator-(const QInt &a, const QInt &b)
@@ -428,7 +431,65 @@ QInt operator*(const QInt &a, const QInt &b)
 	return x;
 }
 
-QInt operator+=(QInt &a, const QInt &b)
+QInt operator/(const QInt &a, const QInt &b)
+{
+	bool* dividend = a.DecToBin();
+	bool* divisor = b.DecToBin();
+	bool complement[SIZE] = { false };
+	bool sign = dividend[SIZE - 1] ^ divisor[SIZE - 1] ? true : false;
+	
+	if (dividend[SIZE - 1] == true)
+		TwoComplement(dividend, SIZE);
+
+	if (divisor[SIZE - 1] == true)
+		TwoComplement(divisor, SIZE);
+
+	int count = 0;
+	int i;
+	for (i = SIZE - 2; i >= 0; i--)
+		if (dividend[i])
+		{
+			count = i;
+			break;
+		}
+
+	int n = count;
+
+	while (count >= 0)
+	{
+		bool head = dividend[n];
+		for (i = n; i >= 1; i--)
+		{
+			dividend[i] = dividend[i - 1];
+			complement[i] = complement[i - 1];
+		}
+		dividend[0] = 0;
+		complement[0] = head;
+
+		TwoComplement(divisor, SIZE);
+		SumBinary(complement, divisor);
+		TwoComplement(divisor, SIZE);
+
+		if (complement[SIZE - 1] == true)
+			SumBinary(complement, divisor);
+		else
+			dividend[0] = 1;
+			
+		count--;
+	}
+
+	if (sign)
+		TwoComplement(dividend, SIZE);
+
+	QInt x = QInt::BinToDec(dividend);
+
+	delete[]dividend;
+	delete[]divisor;
+
+	return x;
+}
+
+QInt operator +=(QInt &a, const QInt &b)
 {
 	a = a + b;
 	return a;
@@ -464,75 +525,75 @@ QInt operator ^(const QInt& a, const QInt& b)
 	return temp;
 }
 
-//QInt operator << (const QInt& a, const QInt& b)
-//{
-//	QInt temp = a;
-//	QInt one;
-//	bool c[3];
-//	QInt i;
-//	const uint64_t max = pow(2, 31);
-//	string bit1 = "00000000000000000000000000000001";
-//	uint32_t mask = stoul(bit1, nullptr, 2);
-//	for (i; i < b; i += one)
-//	{
-//		temp.data[0] <<= 1;
-//		check[0] = (temp.data[1] >= max) ? true : false;
-//		temp.data[1] <<= 1;
-//		check[1] = (temp.data[2] >= max) ? true : false;
-//		temp.data[2] <<= 1;
-//		check[2] = (temp.data[3] >= max) ? true : false;
-//		temp.data[3] <<= 1;
-//
-//		if (check[0]) 
-//		{
-//			temp.data[0] |= mask;
-//		}
-//		if (check[1]) 
-//		{
-//			temp.data[1] |= mask;
-//		}
-//		if (check[2]) 
-//		{
-//			temp.data[2] |= mask;
-//		}
-//	}
-//	return temp;
-//}
-//
-//QInt operator >> (const QInt& a, const QInt& b)
-//{
-//	QInt temp = a;
-//	QInt one;
-//	bool c[3];
-//	QInt i;
-//	const uint64_t min = 1;
-//	string bit1 = "10000000000000000000000000000000";
-//	uint32_t mask = stoul(bit1, nullptr, 2);
-//	for (i; i < b; i += one)
-//	{
-//		temp.data[0] >>= 1;
-//		check[0] = (temp.data[1] >= min) ? true : false;
-//		temp.data[1] >>= 1;
-//		check[1] = (temp.data[2] >= min) ? true : false;
-//		temp.data[2] >>= 1;
-//		check[2] = (temp.data[3] >= min) ? true : false;
-//		temp.data[3] >>= 1;
-//
-//		if (check[0])
-//		{
-//			temp.data[0] |= mask;
-//		}
-//		if (check[1])
-//		{
-//			temp.data[1] |= mask;
-//		}
-//		if (check[2])
-//		{
-//			temp.data[2] |= mask;
-//		}
-//	}
-//	return temp;
-//}
+QInt operator << (const QInt& a, const QInt& b)
+{
+	QInt temp = a;
+	QInt one;
+	bool c[3];
+	QInt i;
+	const uint64_t max = pow(2, 31);
+	string bit1 = "00000000000000000000000000000001";
+	uint32_t mask = stoul(bit1, nullptr, 2);
+	for (i; i < b; i += one)
+	{
+		temp.data[0] <<= 1;
+		check[0] = (temp.data[1] >= max) ? true : false;
+		temp.data[1] <<= 1;
+		check[1] = (temp.data[2] >= max) ? true : false;
+		temp.data[2] <<= 1;
+		check[2] = (temp.data[3] >= max) ? true : false;
+		temp.data[3] <<= 1;
+
+		if (check[0]) 
+		{
+			temp.data[0] |= mask;
+		}
+		if (check[1]) 
+		{
+			temp.data[1] |= mask;
+		}
+		if (check[2]) 
+		{
+			temp.data[2] |= mask;
+		}
+	}
+	return temp;
+}
+
+QInt operator >> (const QInt& a, const QInt& b)
+{
+	QInt temp = a;
+	QInt one;
+	bool c[3];
+	QInt i;
+	const uint64_t min = 1;
+	string bit1 = "10000000000000000000000000000000";
+	uint32_t mask = stoul(bit1, nullptr, 2);
+	for (i; i < b; i += one)
+	{
+		temp.data[0] >>= 1;
+		check[0] = (temp.data[1] >= min) ? true : false;
+		temp.data[1] >>= 1;
+		check[1] = (temp.data[2] >= min) ? true : false;
+		temp.data[2] >>= 1;
+		check[2] = (temp.data[3] >= min) ? true : false;
+		temp.data[3] >>= 1;
+
+		if (check[0])
+		{
+			temp.data[0] |= mask;
+		}
+		if (check[1])
+		{
+			temp.data[1] |= mask;
+		}
+		if (check[2])
+		{
+			temp.data[2] |= mask;
+		}
+	}
+	return temp;
+}
 
 QInt QInt::operator~()
 {
@@ -582,3 +643,4 @@ bool QInt::operator==(const QInt& a)
 		return this->data[i] == a.data[i];
 	}
 }
+
