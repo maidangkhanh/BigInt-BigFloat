@@ -528,9 +528,9 @@ QInt operator ^(const QInt& a, const QInt& b)
 QInt operator << (const QInt& a, const QInt& b)
 {
 	QInt temp = a;
-	QInt one;
+	QInt one("1");
 	bool c[3];
-	QInt i;
+	QInt i("0");
 	const uint64_t max = pow(2, 31);
 	string bit1 = "00000000000000000000000000000001";
 	uint32_t mask = stoul(bit1, nullptr, 2);
@@ -563,9 +563,9 @@ QInt operator << (const QInt& a, const QInt& b)
 QInt operator >> (const QInt& a, const QInt& b)
 {
 	QInt temp = a;
-	QInt one;
+	QInt one("1");
 	bool c[3];
-	QInt i;
+	QInt i("0");
 	const uint64_t min = 1;
 	string bit1 = "10000000000000000000000000000000";
 	uint32_t mask = stoul(bit1, nullptr, 2);
