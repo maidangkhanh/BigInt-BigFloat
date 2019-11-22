@@ -29,7 +29,6 @@ bool isFloat(string s)
 
 }
 
-
 void fCleanUpString(string &str)
 {
 	if (!str.empty() && str.front() != '-')
@@ -114,9 +113,9 @@ string NaturalDecimalStringToBinaryString(string s)
 
 string FractionDecimalStringToBinaryString(string s)
 {
-	s = '0' + s;
+	//s = '0' + s;
 	string res = "";
-	for (int i = 0; i < 250; i++)
+	for (int i = 0; i < FRACTION; i++)
 	{
 		s = fSumNumberString(s, s);
 		res = res + s[0];
@@ -128,26 +127,34 @@ string FractionDecimalStringToBinaryString(string s)
 //possible memory leak, remember to delete
 bool* StringToFloatingPointBinary(string s)
 {
+	string sign = s.front() == '-' ? "1" : "0";
 	string natural = "", fraction = "";
 	int point_pos = s.find('.');
 
-	if (point_pos == s.npos)
+	if (point_pos == -1)
 	{
-		natural = s;
+		string temp;
+		if (s.front() == '-')
+			temp = s.substr(1);
+		natural = temp;
 		fraction = "0";
 	}
 	else
 	{
-		natural = s.substr(0, point_pos);
+		int start = 0;
+		if (sign == "1")
+			start = 1;
+		natural = s.substr(start+1, point_pos);
 		fraction = s.substr(point_pos + 1);
 	}
 	if (natural == "") natural = "0";
 	if (fraction == "") fraction = "0";
+
 	natural = NaturalDecimalStringToBinaryString(natural);
 	fraction = FractionDecimalStringToBinaryString(fraction);
 	int shift = 0, n_bit_1_pos = natural.find("1"), f_bit_1_pos = fraction.find("1");
 
-	if (n_bit_1_pos != natural.npos)
+	if (n_bit_1_pos != -1)
 	{
 		shift = natural.length() - n_bit_1_pos - 1;
 		fraction = natural.substr(n_bit_1_pos + 1) + fraction;
@@ -167,15 +174,13 @@ bool* StringToFloatingPointBinary(string s)
 
 	string exponent = NaturalDecimalStringToBinaryString(to_string(shift + MAX_EXP));
 
-	if (exponent.length() < 15)
+	if (exponent.length() < EXPONENT)
 		exponent = "0" + exponent;
 	
-	fraction.resize(112, '0');
-
-	string sign = s.front() == '-' ? "1" : "0";
+	fraction.resize(FRACTION, '0');
 
 	string bin = (sign + exponent + fraction);
-	cout << bin;
+
 	bool* bit = new bool[SIZE];
 
 	for (int i = 0; i < SIZE; i++)
@@ -210,7 +215,9 @@ string BinaryStringToFloatingPointDecimalString(string b)
 		}
 		temp = fDivideBy2(temp+"0");
 	}
-	int len_max = arr[arr.size() - 1].length();
+	int len_max = 0;
+	if (!arr.empty())
+		len_max = arr[arr.size() - 1].length();
 	string res = "0";
 	for (unsigned int i = 0; i < arr.size(); i++)
 	{
@@ -262,7 +269,7 @@ void QFloat::ScanQFloat()
 {
 	string s;
 	cin >> s;
-	if (isFloat(s))
+	//if (isFloat(s))
 	{
 		bool* bin = StringToFloatingPointBinary(s);
 		*this = BinToDec(bin);
@@ -272,7 +279,7 @@ void QFloat::ScanQFloat()
 
 void QFloat::ScanQFloat(string s)
 {
-	if (isFloat(s))
+	//if (isFloat(s))
 	{
 		bool* bin = StringToFloatingPointBinary(s);
 		*this = BinToDec(bin);
@@ -299,12 +306,14 @@ void QFloat::printQFloat()
 			s += bin_array[EXPONENT + 1 + i] + '0';
 		}
 		//cout << s << endl;
+
 		a = BinaryStringToDecimalString(s);
 		b = "";
 		for (int i = EXPONENT + 1 + val; i < SIZE; i++)
 		{
 			b += bin_array[i] + '0';
 		}
+		//cout << b << endl;
 		b = BinaryStringToFloatingPointDecimalString(b);
 	}
 	else
