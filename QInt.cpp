@@ -659,3 +659,18 @@ QInt QInt::operatorrol(uint32_t bit)
 	}
 	return *this = BinToDec(bin);
 }
+QInt QInt::operatorror(uint32_t bit)
+{
+	bool *bin1 = new bool[bit];
+	bool *bin = this->DecToBin();
+	for (uint32_t i = 0; i < bit; i++) {
+		bin1[i] = bin[SIZE - 1 - i];
+	}
+	for (uint32_t i = SIZE - 1; i >= bit; i--) {
+		bin[i] = bin[i - bit];
+	}
+	for (uint32_t i = 0; i < bit; i++) {
+		bin[bit - 1 - i] = bin1[i];
+	}
+	return *this = BinToDec(bin);
+}
