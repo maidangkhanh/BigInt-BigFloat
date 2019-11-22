@@ -11,21 +11,6 @@
 
 using namespace std;
 
-QFloat::QFloat()
-{
-	for (int i = 0; i < 4; i++)
-		this->data[i] = 0;
-}
-
-QFloat::QFloat(std::string s)
-{
-	if (isFloat(s))
-	{
-		bool* bin = StringToFloatingPointBinary(s);
-		*this = BinToDec(bin);
-		delete[]bin;
-	}
-}
 
 bool isFloat(string s)
 {
@@ -43,6 +28,7 @@ bool isFloat(string s)
 	return !s.empty() && i == s.length();
 
 }
+
 
 void fCleanUpString(string &str)
 {
@@ -234,6 +220,21 @@ string BinaryStringToFloatingPointDecimalString(string b)
 	return res;
 }
 
+QFloat::QFloat()
+{
+	for (int i = 0; i < 4; i++)
+		this->data[i] = 0;
+}
+
+QFloat::QFloat(std::string s)
+{
+	if (isFloat(s))
+	{
+		bool* bin = StringToFloatingPointBinary(s);
+		*this = BinToDec(bin);
+		delete[]bin;
+	}
+}
 QFloat QFloat::BinToDec(bool *bin)
 {
 	QFloat x;
