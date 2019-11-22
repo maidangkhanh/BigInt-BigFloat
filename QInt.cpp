@@ -644,3 +644,18 @@ bool QInt::operator==(const QInt& a)
 	}
 }
 
+QInt QInt::operatorrol(uint32_t bit)
+{
+	bool *bin1 = new bool[bit];
+	bool *bin = this->DecToBin();
+	for (uint32_t i = 0; i < bit; i++) {
+		bin1[i] = bin[i];
+	}
+	for (uint32_t i = 0; i < SIZE - bit; i++) {
+		bin[i] = bin[i + bit];
+	}
+	for (uint32_t i = 0; i < bit; i++) {
+		bin[SIZE - bit + i] = bin1[i];
+	}
+	return *this = BinToDec(bin);
+}

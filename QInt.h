@@ -24,6 +24,8 @@ public:
 	bool operator<(const QInt& a);
 	bool operator<=(const QInt& a);
 	bool operator==(const QInt& a);
+	QInt operatorrol(uint32_t bit);
+	QInt operatorror(uint32_t bit);
 private:
 	uint32_t data[4];
 };
