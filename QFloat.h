@@ -7,7 +7,7 @@ public:
 	QFloat(std::string);
 	void ScanQFloat();
 	void ScanQFloat(std::string);
-	void printQFloat();
+	void PrintQFloat();
 	QFloat BinToDec(bool *bin); 
 	bool* DecToBin() const;
 private:

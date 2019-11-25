@@ -144,7 +144,7 @@ bool* StringToFloatingPointBinary(string s)
 		int start = 0;
 		if (sign == "1")
 			start = 1;
-		natural = s.substr(start, point_pos);
+		natural = s.substr(start, point_pos - start);
 		fraction = s.substr(point_pos + 1);
 	}
 	if (natural == "") natural = "0";
@@ -282,7 +282,7 @@ void QFloat::ScanQFloat(string s)
 	delete[]bin;
 }
 
-void QFloat::printQFloat()
+void QFloat::PrintQFloat()
 {
 	bool *bin_array = this->DecToBin();
 	int pow2 = 1, val = 0;
