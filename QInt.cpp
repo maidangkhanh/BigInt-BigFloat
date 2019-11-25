@@ -595,6 +595,42 @@ QInt operator >> (const QInt& a, const QInt& b)
 	return temp;
 }
 
+QInt QInt::ArithmeticShiftLeft(const QInt& a, const QInt& b)
+{
+	QInt temp = a;
+	uint32_t max = pow(2, 31);
+	temp = temp << b;
+	bool check = (a.data[0] >= max) ? true : false;
+	if (check) 
+	{
+		temp.data[0] |= max;
+	}
+	else 
+	{
+		max -= 1;
+		temp.data[0] &= max;
+	}
+	return temp;
+}
+
+QInt QInt::ArithmeticShiftRight(const QInt& a, const QInt& b)
+{
+	QInt temp = a;
+	uint32_t max = pow(2, 31);
+	temp = temp >> b;
+	bool check = (a.data[0] >= max) ? true : false;
+	if (check)
+	{
+		temp.data[0] |= max;
+	}
+	else
+	{
+		max -= 1;
+		temp.data[0] &= max;
+	}
+	return temp;
+}
+
 QInt QInt::operator~()
 {
 	QInt temp;
