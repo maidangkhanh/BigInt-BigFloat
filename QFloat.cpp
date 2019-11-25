@@ -113,7 +113,7 @@ string NaturalDecimalStringToBinaryString(string s)
 
 string FractionDecimalStringToBinaryString(string s)
 {
-	//s = '0' + s;
+	s = '0' + s;
 	string res = "";
 	for (int i = 0; i < FRACTION; i++)
 	{
@@ -133,8 +133,8 @@ bool* StringToFloatingPointBinary(string s)
 
 	if (point_pos == -1)
 	{
-		string temp;
-		if (s.front() == '-')
+		string temp = s;
+		if (sign == "1")
 			temp = s.substr(1);
 		natural = temp;
 		fraction = "0";
@@ -144,7 +144,7 @@ bool* StringToFloatingPointBinary(string s)
 		int start = 0;
 		if (sign == "1")
 			start = 1;
-		natural = s.substr(start+1, point_pos);
+		natural = s.substr(start, point_pos);
 		fraction = s.substr(point_pos + 1);
 	}
 	if (natural == "") natural = "0";
@@ -269,22 +269,17 @@ void QFloat::ScanQFloat()
 {
 	string s;
 	cin >> s;
-	//if (isFloat(s))
-	{
-		bool* bin = StringToFloatingPointBinary(s);
-		*this = BinToDec(bin);
-		delete[]bin;
-	}
+	bool* bin = StringToFloatingPointBinary(s);
+	*this = BinToDec(bin);
+	delete[]bin;
+	
 }
 
 void QFloat::ScanQFloat(string s)
 {
-	//if (isFloat(s))
-	{
-		bool* bin = StringToFloatingPointBinary(s);
-		*this = BinToDec(bin);
-		delete[]bin;
-	}
+	bool* bin = StringToFloatingPointBinary(s);
+	*this = BinToDec(bin);
+	delete[]bin;
 }
 
 void QFloat::printQFloat()
