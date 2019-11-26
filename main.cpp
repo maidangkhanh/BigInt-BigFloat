@@ -8,16 +8,16 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-	if (argv[2] == "1")
+	if (argc == 3)
 	{
+		string input(argv[0]);
+		string output(argv[1]);
 
-	}
-	else if (argv[2] == "2")
-	{
-		ExecuteQfloat(argv[0], argv[1]);
-	}
-	else
-	{
+		if (argv[2] == "1")
+			ExcuteQInt(input, output);
+
+		if (argv[2] == "2")
+			ExecuteQfloat(input, output);
 
 	}
 

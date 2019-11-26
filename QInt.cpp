@@ -1,9 +1,11 @@
-﻿#include "QInt.h"
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include "QInt.h"
 #include <iostream>
 #include <string>
 #include <cmath>
 #include <memory>
 #include <fstream>
+#include <sstream>
 #define SIZE 128
 
 using namespace std;
@@ -369,6 +371,26 @@ void QInt::ScanQInt()
 	}
 }
 
+void QInt::ScanQInt(string s)
+{
+	if (IsNumber(s)) {
+		bool bin[SIZE] = { false };
+		uint32_t i = 0;
+		char sign = s.front();
+
+		StringToBinary(s, bin);
+
+		// nếu chuỗi số âm thì lấy bù 2 của dãy nhị phân bin
+		if (sign == '-')
+			TwoComplement(bin, SIZE);
+
+		for (i = 0; i < 4; i++)
+			this->data[i] = 0;
+
+		*this = BinToDec(bin);
+	}
+}
+
 void QInt::PrintQInt()
 {
 	bool bin[SIZE] = { false };
@@ -598,7 +620,7 @@ QInt operator >> (const QInt& a, const QInt& b)
 QInt QInt::ArithmeticShiftLeft(const QInt& a, const QInt& b)
 {
 	QInt temp = a;
-	uint32_t max = (uint64_t)pow(2, 31);
+	uint32_t max = (uint32_t)pow(2, 31);
 	temp = temp << b;
 	bool check = (a.data[0] >= max) ? true : false;
 	if (check) 
@@ -616,7 +638,7 @@ QInt QInt::ArithmeticShiftLeft(const QInt& a, const QInt& b)
 QInt QInt::ArithmeticShiftRight(const QInt& a, const QInt& b)
 {
 	QInt temp = a;
-	uint32_t max = (uint64_t)pow(2, 31);
+	uint32_t max = (uint32_t)pow(2, 31);
 	temp = temp >> b;
 	bool check = (a.data[0] >= max) ? true : false;
 	if (check)
@@ -750,4 +772,206 @@ unsigned int QInt::getModeFromString(string a)
 		return 1;
 	}
 	return 2;
+}
+
+bool* BinaryStringToBinaryBit(string s)
+{
+	bool * bit = new bool[SIZE];
+	for (unsigned i = 0;i<SIZE;i++)
+	{
+		if (s[s.length() - i -1] == '1')
+			bit[i] = 1;
+		else
+			bit[i] = 0;
+	}
+	return bit;
+}
+string getFourBitOfHex(int y)
+{
+	string a[16] = { "0000", "0001", "0010", "0011", "0100", "0101", "0110", "0111", "1000", "1001", "1010", "1011", "1100", "1101", "1110", "1111" };
+	return a[y];
+}
+
+QInt hexStrToQInt(string s)
+{
+	QInt res;
+	string str_bin = "";
+	int len = s.length();
+	for (int i = 0; i < len; i++)
+	{
+		int temp;
+		if (s[i] <= '9')
+		{
+			temp = s[i] - '0';
+		}
+		else
+		{
+			temp = s[i] - 55;
+		}
+		str_bin += getFourBitOfHex(temp);
+	}
+	while (str_bin.length() < 128)
+	{
+		str_bin = '0' + str_bin;
+	}
+	bool *bit = new bool[128];
+	for (int i = 0; i < 128; i++)
+	{
+		bit[i] = str_bin[i] - '0';
+	}
+	QInt temp;
+	temp = QInt::BinToDec(bit);
+	delete[] bit;
+	return temp;
+}
+
+QInt caculateInQInt(QInt x, QInt y, string _operator)
+{
+	if (_operator == "+")
+		return x + y;
+	else if (_operator == "-")
+		return x - y;
+	else if (_operator == "*")
+		return x * y;
+	else if (_operator == "/")
+		return x / y;
+	else if (_operator == "&")
+		return x & y;
+	else if (_operator == "|")
+		return x | y;
+	else if (_operator == "^")
+		return x ^ y;
+	else if (_operator == "~")
+		return ~x;
+	else if (_operator == ">>")
+		return x >> y;
+	else if (_operator == "<<")
+		return x << y;
+}
+
+void numberCalculator(string a, string b, string c, string d)
+{
+	QInt x, y;
+	if (a == "2")
+	{
+		bool *bit = BinaryStringToBinaryBit(b);
+		x = QInt::BinToDec(bit);
+		delete[]bit;
+		bit = BinaryStringToBinaryBit(d);
+		x = QInt::BinToDec(bit);
+		caculateInQInt(x, y, c).PrintQInt();
+	}
+	else if (a == "10")
+	{
+		x.ScanQInt(b);
+		y.ScanQInt(d);
+		caculateInQInt(x, y, c).PrintQInt();
+	}
+	else if (a == "16")
+	{
+		x = hexStrToQInt(b);
+		y = hexStrToQInt(d);
+		string res;
+		res = caculateInQInt(x, y, c).DecToHex();
+		cout << res;
+	}
+}
+
+void numberConversion(string a, string b, string s)
+{
+	QInt x;
+	string res;
+
+	if (a == "2") {
+		bool *bit = BinaryStringToBinaryBit(b);
+		x = QInt::BinToDec(bit);
+		delete[]bit;
+		if (b == "~")
+		{
+			QInt y = ~x;
+			y.PrintQInt();
+			return;
+		}
+		if (b == "10") {
+			x.PrintQInt();
+		}
+		else {
+			cout << x.DecToHex();
+		}
+	}
+	else if (a == "10")
+	{
+		x.ScanQInt(s);
+		if (b == "~")
+		{
+			QInt y = ~x;
+			y.PrintQInt();
+			return;
+		}
+		if (b == "2") {
+			bool *bit = x.DecToBin();
+			for (int i = 0; i < SIZE; i++)
+			{
+				if (bit[i])
+					cout << "1";
+				else cout << "0";
+				delete[]bit;
+				return;
+			}
+		}
+		else {
+			cout << x.DecToHex();
+		}
+	}
+	else
+	{
+		if (b == "~")
+		{
+			QInt y = ~hexStrToQInt(s);
+			y.PrintQInt();
+			return;
+		}
+		if (b == "2")
+		{
+			bool *bit = hexStrToQInt(s).DecToBin();
+			for (int i = 0; i < SIZE; i++)
+			{
+				if (bit[i])
+					cout << "1";
+				else cout << "0";
+				delete[]bit;
+				return;
+			}
+			return;
+		}
+		else
+		{
+			hexStrToQInt(s).PrintQInt();
+		}
+	}
+}
+
+void ExcuteQInt(string input, string output)
+{
+	freopen(input.c_str(), "r", stdin);
+	freopen(output.c_str(), "w", stdout);
+
+	string s;
+	while (getline(cin, s))
+	{
+		stringstream ss(s);
+		vector<string> arr;
+		while (ss >> s)
+		{
+			arr.push_back(s);
+		}
+		if (arr.size() == 3)
+		{
+			numberConversion(arr[0], arr[1], arr[2]);
+		}
+		else
+		{
+			numberCalculator(arr[0], arr[1], arr[2], arr[3]);
+		}
+	}
 }

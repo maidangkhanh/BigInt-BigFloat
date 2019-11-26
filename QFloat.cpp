@@ -430,8 +430,8 @@ bool QFloat::isSpecialNum()
 
 void ExecuteQfloat(string in, string out)
 {
-	freopen("in.txt", "r", stdin);
-	freopen("out.txt", "w", stdout);
+	freopen(in.c_str(), "w", stdout);
+	freopen(out.c_str(), "r", stdin);
 	
 	int base1, base2;
 	while (cin >> base1)
@@ -442,13 +442,13 @@ void ExecuteQfloat(string in, string out)
 		{
 			string bin;
 			cin >> bin;
-			bin = BinaryStringToFloatingPointDecimalString(bin);
+			bool *bit = new bool[SIZE];
+			bit = StringToFloatingPointBinary(bin);
+			x.BinToDec(bit);
 			bool flag = x.isSpecialNum();
 			if (!flag)
-			{
-				x.ScanQFloat(bin);
 				x.PrintQFloat();
-			}
+			delete[]bit;
 		}
 		else
 		{

@@ -8,6 +8,7 @@ public:
 	QInt();
 	QInt(std::string decimal);
 	void ScanQInt();
+	void ScanQInt(std::string);
 	void PrintQInt();
 	bool* DecToBin() const;
 	static QInt BinToDec(bool *bin);
@@ -42,3 +43,5 @@ QInt operator*(const QInt &a, const QInt &b);
 QInt operator/(const QInt &a, const QInt &b);
 
 vector<string> ReadFromFile(string filename);
+
+void ExcuteQInt(string, string);
