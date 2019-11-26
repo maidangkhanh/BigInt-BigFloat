@@ -3,7 +3,7 @@
 #include <string>
 #include <cmath>
 #include <memory>
-
+#include <fstream>
 #define SIZE 128
 
 using namespace std;
@@ -709,4 +709,45 @@ QInt QInt::operatorror(uint32_t bit)
 		bin[bit - 1 - i] = bin1[i];
 	}
 	return *this = BinToDec(bin);
+}
+
+vector<string> ReadFromFile(string filename)
+{
+	int i = 0;
+	vector<string> temp;
+	ifstream fin;
+	fin.open(filename, ios::in);
+	if (!fin.is_open())
+	{
+		return NULL;
+	}
+	while (fin)
+	{
+		string a;
+		getline(a, fin, "\n");
+		temp[i].push_back(a);
+		i++;
+	}
+	return temp;
+	fin.close();
+}
+unsigned int QInt::getModeFromString(string a)
+{
+	string space = " ";
+	int pos = a.find(space);
+	pos--;
+	string temp;
+	for (int i = 0; i <= pos; i++)
+	{
+		temp[i] = a[i];
+	}
+	if (temp.compare("2") == 0)
+	{
+		return 0;
+	}
+	if (temp.compare("10") == 0)
+	{
+		return 1;
+	}
+	return 2;
 }
