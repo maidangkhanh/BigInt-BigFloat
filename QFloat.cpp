@@ -4,6 +4,7 @@
 #include <string>
 #include <cmath>
 #include <vector>
+#include <cstdio>
 
 #define SIZE 128
 #define EXPONENT 15
@@ -427,10 +428,10 @@ bool QFloat::isSpecialNum()
 	return isSpecial;
 }
 
-void ExecuteQfloat(char *inFile, char *outFile)
+void ExecuteQfloat(string in, string out)
 {
-	freopen(inFile, "r", stdin);
-	freopen(outFile, "w", stdout);
+	freopen("in.txt", "r", stdin);
+	freopen("out.txt", "w", stdout);
 	
 	int base1, base2;
 	while (cin >> base1)
@@ -456,5 +457,8 @@ void ExecuteQfloat(char *inFile, char *outFile)
 			x.ScanQFloat(dec);
 			x.PrintQFloat();
 		}
+		cout << endl;
 	}
+	fclose(stdin);
+	fclose(stdout);
 }
