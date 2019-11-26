@@ -10,6 +10,13 @@ public:
 	void PrintQFloat();
 	QFloat BinToDec(bool *bin); 
 	bool* DecToBin() const;
+	bool isZero();
+	bool isINF();
+	bool isNaN();
+	bool isDenormalisedNum();
+	bool isSpecialNum();
 private:
 	uint32_t data[4];
 };
+
+void ExecuteQfloat(char*, char*);

@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "QFloat.h"
 #include <iostream>
 #include <string>
@@ -324,4 +325,136 @@ void QFloat::PrintQFloat()
 	}
 	cout << (bin_array[0] == true ? "-" : "") << a << "." << b;
 	delete[] bin_array;
+}
+
+bool QFloat::isZero()
+{
+	bool *bit = new bool[SIZE];
+	bit = this->DecToBin();
+	for (int i = 0; i < EXPONENT; i++)
+	{
+		if (bit[i] == 1)
+			return false;
+	}
+	for (int i = EXPONENT; i < SIZE; i++)
+	{
+		if (bit[i] == 1)
+			return false;
+	}
+	delete[]bit;
+	return true;
+}
+
+bool QFloat::isINF()
+{
+	bool *bit = new bool[SIZE];
+	bit = this->DecToBin();
+	for (int i = 0; i < EXPONENT; i++)
+	{
+		if (bit[i] == 0)
+			return false;
+	}
+	for (int i = EXPONENT; i < SIZE; i++)
+	{
+		if (bit[i] == 1)
+			return false;
+	}
+	delete[]bit;
+	return true;
+}
+
+bool QFloat::isNaN()
+{
+	bool *bit = new bool[SIZE];
+	bit = this->DecToBin();
+	for (int i = 0; i < EXPONENT; i++)
+	{
+		if (bit[i] == 0)
+			return false;
+	}
+	for (int i = EXPONENT; i < SIZE; i++)
+	{
+		if (bit[i] == 1)
+			return true;
+	}
+	delete[]bit;
+	return false;
+}
+
+bool QFloat::isDenormalisedNum()
+{
+	bool *bit = new bool[SIZE];
+	bit = this->DecToBin();
+	for (int i = 0; i < EXPONENT; i++)
+	{
+		if (bit[i] == 0)
+			return false;
+	}
+	for (int i = EXPONENT; i < SIZE; i++)
+	{
+		if (bit[i] == 1)
+			return true;
+	}
+	delete[]bit;
+	return false;
+}
+
+
+bool QFloat::isSpecialNum()
+{
+	bool isSpecial = false;
+	if (this->isZero())
+	{
+		cout << "0";
+		isSpecial = true;
+	}
+	else if (this->isINF())
+	{
+		cout << "INF";
+		isSpecial = true;
+	}
+	else if (this->isDenormalisedNum())
+	{
+		cout << "Denormalised Number";
+		isSpecial = true;
+	}
+	else if (this->isNaN())
+	{
+		cout << "NaN";
+		isSpecial = true;
+
+	}
+	return isSpecial;
+}
+
+void ExecuteQfloat(char *inFile, char *outFile)
+{
+	freopen(inFile, "r", stdin);
+	freopen(outFile, "w", stdout);
+	
+	int base1, base2;
+	while (cin >> base1)
+	{
+		cin >> base2;
+		QFloat x;
+		if (base1 == 2)
+		{
+			string bin;
+			cin >> bin;
+			bin = BinaryStringToFloatingPointDecimalString(bin);
+			bool flag = x.isSpecialNum();
+			if (!flag)
+			{
+				x.ScanQFloat(bin);
+				x.PrintQFloat();
+			}
+		}
+		else
+		{
+			string dec;
+			cin >> dec;
+			x.ScanQFloat(dec);
+			x.PrintQFloat();
+		}
+	}
 }

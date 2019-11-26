@@ -529,9 +529,9 @@ QInt operator << (const QInt& a, const QInt& b)
 {
 	QInt temp = a;
 	QInt one("1");
-	bool c[3];
+	bool check[3];
 	QInt i("0");
-	const uint64_t max = pow(2, 31);
+	const uint64_t max = (uint64_t)pow(2, 31);
 	string bit1 = "00000000000000000000000000000001";
 	uint32_t mask = stoul(bit1, nullptr, 2);
 	for (i; i < b; i += one)
@@ -564,7 +564,7 @@ QInt operator >> (const QInt& a, const QInt& b)
 {
 	QInt temp = a;
 	QInt one("1");
-	bool c[3];
+	bool check[3];
 	QInt i("0");
 	const uint64_t min = 1;
 	string bit1 = "10000000000000000000000000000000";
@@ -598,7 +598,7 @@ QInt operator >> (const QInt& a, const QInt& b)
 QInt QInt::ArithmeticShiftLeft(const QInt& a, const QInt& b)
 {
 	QInt temp = a;
-	uint32_t max = pow(2, 31);
+	uint32_t max = (uint64_t)pow(2, 31);
 	temp = temp << b;
 	bool check = (a.data[0] >= max) ? true : false;
 	if (check) 
@@ -616,7 +616,7 @@ QInt QInt::ArithmeticShiftLeft(const QInt& a, const QInt& b)
 QInt QInt::ArithmeticShiftRight(const QInt& a, const QInt& b)
 {
 	QInt temp = a;
-	uint32_t max = pow(2, 31);
+	uint32_t max = (uint64_t)pow(2, 31);
 	temp = temp >> b;
 	bool check = (a.data[0] >= max) ? true : false;
 	if (check)
@@ -719,17 +719,17 @@ vector<string> ReadFromFile(string filename)
 	fin.open(filename, ios::in);
 	if (!fin.is_open())
 	{
-		return NULL;
+		return {};
 	}
 	while (fin)
 	{
 		string a;
-		getline(a, fin, "\n");
-		temp[i].push_back(a);
+		getline(fin, a, '\n');
+		temp.push_back(a);
 		i++;
 	}
-	return temp;
 	fin.close();
+	return temp;
 }
 unsigned int QInt::getModeFromString(string a)
 {
