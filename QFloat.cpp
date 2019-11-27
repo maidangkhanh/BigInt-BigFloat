@@ -428,7 +428,7 @@ bool QFloat::isSpecialNum()
 	return isSpecial;
 }
 
-void ExecuteQfloat(string in, string out)
+void ExecuteQFloat(string in, string out)
 {
 	freopen(in.c_str(), "w", stdout);
 	freopen(out.c_str(), "r", stdin);
@@ -461,4 +461,38 @@ void ExecuteQfloat(string in, string out)
 	}
 	fclose(stdin);
 	fclose(stdout);
+}
+
+void ExcuteQFloat()
+{
+	int base1, base2;
+	cout << "Enter base 1: ";
+	while (cin >> base1)
+	{
+		cout << "Enter base 2: ";
+		cin >> base2;
+		QFloat x;
+		if (base1 == 2)
+		{
+			string bin;
+			cout << "Enter value: ";
+			cin >> bin;
+			bool *bit = new bool[SIZE];
+			bit = StringToFloatingPointBinary(bin);
+			x.BinToDec(bit);
+			bool flag = x.isSpecialNum();
+			if (!flag)
+				x.PrintQFloat();
+			delete[]bit;
+		}
+		else
+		{
+			string dec;
+			cout << "Enter value: ";
+			cin >> dec;
+			x.ScanQFloat(dec);
+			x.PrintQFloat();
+		}
+		cout << endl;
+	}
 }

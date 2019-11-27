@@ -19,4 +19,5 @@ private:
 	uint32_t data[4];
 };
 
-void ExecuteQfloat(std::string,std::string);
+void ExecuteQFloat(std::string,std::string);
+void ExcuteQFloat();

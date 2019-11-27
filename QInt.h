@@ -45,3 +45,4 @@ QInt operator/(const QInt &a, const QInt &b);
 vector<string> ReadFromFile(string filename);
 
 void ExcuteQInt(string, string);
+void ExcuteQInt();

@@ -974,4 +974,28 @@ void ExcuteQInt(string input, string output)
 			numberCalculator(arr[0], arr[1], arr[2], arr[3]);
 		}
 	}
+	fclose(stdin);
+	fclose(stdout);
+}
+
+void ExcuteQInt()
+{
+	string s;
+	while (getline(cin, s))
+	{
+		stringstream ss(s);
+		vector<string> arr;
+		while (ss >> s)
+		{
+			arr.push_back(s);
+		}
+		if (arr.size() == 3)
+		{
+			numberConversion(arr[0], arr[1], arr[2]);
+		}
+		else
+		{
+			numberCalculator(arr[0], arr[1], arr[2], arr[3]);
+		}
+	}
 }
