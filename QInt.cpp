@@ -522,7 +522,7 @@ QInt operator &(const QInt& a, const QInt& b)
 	QInt temp;
 	for (int i = 0; i < 4; i++)
 	{
-		temp.data[i] = a.data[i] & b.data[i];
+		temp.data[i] = a.data[i] & b.data[i]; // & each 32 bit
 	}
 	return temp;
 }
@@ -532,7 +532,7 @@ QInt operator |(const QInt& a, const QInt& b)
 	QInt temp;
 	for (int i = 0; i < 4; i++)
 	{
-		temp.data[i] = a.data[i] | b.data[i];
+		temp.data[i] = a.data[i] | b.data[i];// or each 32 bit
 	}
 	return temp;
 }
@@ -542,7 +542,7 @@ QInt operator ^(const QInt& a, const QInt& b)
 	QInt temp;
 	for (int i = 0; i < 4; i++)
 	{
-		temp.data[i] = a.data[i] ^ b.data[i];
+		temp.data[i] = a.data[i] ^ b.data[i]; //xor each 32 bit
 	}
 	return temp;
 }
@@ -558,25 +558,25 @@ QInt operator << (const QInt& a, const QInt& b)
 	uint32_t mask = stoul(bit1, nullptr, 2);
 	for (i; i < b; i += one)
 	{
-		temp.data[0] <<= 1;
-		check[0] = (temp.data[1] >= max) ? true : false;
+		temp.data[0] <<= 1;// shift first 32 bit
+		check[0] = (temp.data[1] >= max) ? true : false; // check bit 33rd is 1?
 		temp.data[1] <<= 1;
-		check[1] = (temp.data[2] >= max) ? true : false;
+		check[1] = (temp.data[2] >= max) ? true : false;// check bit 65th is 1?
 		temp.data[2] <<= 1;
-		check[2] = (temp.data[3] >= max) ? true : false;
+		check[2] = (temp.data[3] >= max) ? true : false;// check bit 97th is 1?
 		temp.data[3] <<= 1;
 
 		if (check[0]) 
 		{
-			temp.data[0] |= mask;
+			temp.data[0] |= mask;//bit 32nd = 1 if bit 33rd = 1
 		}
 		if (check[1]) 
 		{
-			temp.data[1] |= mask;
+			temp.data[1] |= mask;//bit 64th = 1 if bit 65th = 1
 		}
 		if (check[2]) 
 		{
-			temp.data[2] |= mask;
+			temp.data[2] |= mask;//bit 96th = 1 if bit 95th = 1
 		}
 	}
 	return temp;
@@ -658,7 +658,7 @@ QInt QInt::operator~()
 	QInt temp;
 	for (int i = 0; i < 4; i++)
 	{
-		temp.data[i] = ~this->data[i];
+		temp.data[i] = ~this->data[i]; // not each 32 bits
 	}
 	return temp;
 }
