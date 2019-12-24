@@ -666,69 +666,69 @@ QInt QInt::operator=(const QInt& a)
 {
 	if (this != &a) {
 		for (int i = 0; i < 4; i++) {
-			this->data[i] = a.data[i];
+			this->data[i] = a.data[i]; //assign each 32 bit
 		}
 	}
 	return *this;
 }
-bool QInt::operator>(const QInt& a)
+bool QInt::operator>(const QInt& a) 
 {
 	for (int i = 0; i < 4; i++) {
-		return this->data[i] > a.data[i];
+		return this->data[i] > a.data[i]; //compare each 32 bit
 	}
 }
 bool QInt::operator>=(const QInt& a)
 {
 	for (int i = 0; i < 4; i++) {
-		return this->data[i] >= a.data[i];
+		return this->data[i] >= a.data[i]; //compare each 32 bit
 	}
 }
 bool QInt::operator<(const QInt& a)
 {
 	for (int i = 0; i < 4; i++) {
-		return this->data[i] < a.data[i];
+		return this->data[i] < a.data[i]; //compare each 32 bit
 	}
 }
 bool QInt::operator<=(const QInt& a)
 {
 	for (int i = 0; i < 4; i++) {
-		return this->data[i] <= a.data[i];
+		return this->data[i] <= a.data[i]; //compare each 32 bit
 	}
 }
 bool QInt::operator==(const QInt& a)
 {
 	for (int i = 0; i < 4; i++) {
-		return this->data[i] == a.data[i];
+		return this->data[i] == a.data[i]; //compare each 32 bit
 	}
 }
 
-QInt QInt::operatorrol(uint32_t bit)
+QInt QInt::operatorrol(uint32_t bit) //bit are number of bits that we want to roll
 {
 	bool *bin1 = new bool[bit];
-	bool *bin = this->DecToBin();
+	bool *bin = this->DecToBin(); //convert into binary
 	for (uint32_t i = 0; i < bit; i++) {
-		bin1[i] = bin[i];
+		bin1[i] = bin[i]; //assign number of bits pushed out of array to new array
 	}
 	for (uint32_t i = 0; i < SIZE - bit; i++) {
-		bin[i] = bin[i + bit];
+		bin[i] = bin[i + bit]; //move all bit to the left
 	}
 	for (uint32_t i = 0; i < bit; i++) {
-		bin[SIZE - bit + i] = bin1[i];
+		bin[SIZE - bit + i] = bin1[i]; //push back bits that are stored in new array
 	}
 	return *this = BinToDec(bin);
 }
-QInt QInt::operatorror(uint32_t bit)
+QInt QInt::operatorror(uint32_t bit) //bit are number of bits that we want to roll
 {
 	bool *bin1 = new bool[bit];
-	bool *bin = this->DecToBin();
+	bool *bin = this->DecToBin(); //convert into binary
 	for (uint32_t i = 0; i < bit; i++) {
-		bin1[i] = bin[SIZE - 1 - i];
+		bin1[i] = bin[SIZE - 1 - i]; //assign number of bits pushed out of array to new array
 	}
 	for (uint32_t i = SIZE - 1; i >= bit; i--) {
-		bin[i] = bin[i - bit];
+		bin[i] = bin[i - bit]; //move all bit to the right
 	}
 	for (uint32_t i = 0; i < bit; i++) {
-		bin[bit - 1 - i] = bin1[i];
+		bin[bit - 1 - i] = bin1[i]; //push back bits that are stored in new array
 	}
 	return *this = BinToDec(bin);
 }
