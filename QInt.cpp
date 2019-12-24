@@ -522,7 +522,7 @@ QInt operator &(const QInt& a, const QInt& b)
 	QInt temp;
 	for (int i = 0; i < 4; i++)
 	{
-		temp.data[i] = a.data[i] & b.data[i];
+		temp.data[i] = a.data[i] & b.data[i]; // & each 32 bit
 	}
 	return temp;
 }
@@ -532,7 +532,7 @@ QInt operator |(const QInt& a, const QInt& b)
 	QInt temp;
 	for (int i = 0; i < 4; i++)
 	{
-		temp.data[i] = a.data[i] | b.data[i];
+		temp.data[i] = a.data[i] | b.data[i];// or each 32 bit
 	}
 	return temp;
 }
@@ -542,7 +542,7 @@ QInt operator ^(const QInt& a, const QInt& b)
 	QInt temp;
 	for (int i = 0; i < 4; i++)
 	{
-		temp.data[i] = a.data[i] ^ b.data[i];
+		temp.data[i] = a.data[i] ^ b.data[i]; //xor each 32 bit
 	}
 	return temp;
 }
@@ -558,25 +558,25 @@ QInt operator << (const QInt& a, const QInt& b)
 	uint32_t mask = stoul(bit1, nullptr, 2);
 	for (i; i < b; i += one)
 	{
-		temp.data[0] <<= 1;
-		check[0] = (temp.data[1] >= max) ? true : false;
+		temp.data[0] <<= 1;// shift first 32 bit
+		check[0] = (temp.data[1] >= max) ? true : false; // check bit 33rd is 1?
 		temp.data[1] <<= 1;
-		check[1] = (temp.data[2] >= max) ? true : false;
+		check[1] = (temp.data[2] >= max) ? true : false;// check bit 65th is 1?
 		temp.data[2] <<= 1;
-		check[2] = (temp.data[3] >= max) ? true : false;
+		check[2] = (temp.data[3] >= max) ? true : false;// check bit 97th is 1?
 		temp.data[3] <<= 1;
 
 		if (check[0]) 
 		{
-			temp.data[0] |= mask;
+			temp.data[0] |= mask;//bit 32nd = 1 if bit 33rd = 1
 		}
 		if (check[1]) 
 		{
-			temp.data[1] |= mask;
+			temp.data[1] |= mask;//bit 64th = 1 if bit 65th = 1
 		}
 		if (check[2]) 
 		{
-			temp.data[2] |= mask;
+			temp.data[2] |= mask;//bit 96th = 1 if bit 95th = 1
 		}
 	}
 	return temp;
@@ -622,19 +622,20 @@ QInt QInt::ArithmeticShiftLeft(const QInt& a, const QInt& b)
 	QInt temp = a;
 	uint32_t max = (uint32_t)pow(2, 31);
 	temp = temp << b;
-	bool check = (a.data[0] >= max) ? true : false;
+	bool check = (a.data[0] >= max) ? true : false; // check if first bit is 1 (negative number)
 	if (check) 
 	{
-		temp.data[0] |= max;
+		temp.data[0] |= max;//if first bit is 1 or with max mask
 	}
 	else 
 	{
-		max -= 1;
-		temp.data[0] &= max;
+		max -= 1;//if first bit is 0 (positive)
+		temp.data[0] &= max;// and logic with and mask 0111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 
 	}
 	return temp;
 }
 
+//same as arithmetic shift left
 QInt QInt::ArithmeticShiftRight(const QInt& a, const QInt& b)
 {
 	QInt temp = a;
@@ -658,15 +659,16 @@ QInt QInt::operator~()
 	QInt temp;
 	for (int i = 0; i < 4; i++)
 	{
-		temp.data[i] = ~this->data[i];
+		temp.data[i] = ~this->data[i]; // not logic each 32 bits
 	}
 	return temp;
 }
+
 QInt QInt::operator=(const QInt& a)
 {
 	if (this != &a) {
 		for (int i = 0; i < 4; i++) {
-			this->data[i] = a.data[i]; //assign each 32 bit
+			this->data[i] = a.data[i]; //assign each 32 bits
 		}
 	}
 	return *this;
@@ -674,35 +676,35 @@ QInt QInt::operator=(const QInt& a)
 bool QInt::operator>(const QInt& a) 
 {
 	for (int i = 0; i < 4; i++) {
-		return this->data[i] > a.data[i]; //compare each 32 bit
+		return this->data[i] > a.data[i]; //compare each 32 bits
 	}
 }
 bool QInt::operator>=(const QInt& a)
 {
 	for (int i = 0; i < 4; i++) {
-		return this->data[i] >= a.data[i]; //compare each 32 bit
+		return this->data[i] >= a.data[i]; //compare each 32 bits
 	}
 }
 bool QInt::operator<(const QInt& a)
 {
 	for (int i = 0; i < 4; i++) {
-		return this->data[i] < a.data[i]; //compare each 32 bit
+		return this->data[i] < a.data[i]; //compare each 32 bits
 	}
 }
 bool QInt::operator<=(const QInt& a)
 {
 	for (int i = 0; i < 4; i++) {
-		return this->data[i] <= a.data[i]; //compare each 32 bit
+		return this->data[i] <= a.data[i]; //compare each 32 bits
 	}
 }
 bool QInt::operator==(const QInt& a)
 {
 	for (int i = 0; i < 4; i++) {
-		return this->data[i] == a.data[i]; //compare each 32 bit
+		return this->data[i] == a.data[i]; //compare each 32 bits
 	}
 }
 
-QInt QInt::operatorrol(uint32_t bit) //bit are number of bits that we want to roll
+QInt QInt::operatorrol(uint32_t bit) 
 {
 	bool *bin1 = new bool[bit];
 	bool *bin = this->DecToBin(); //convert into binary
@@ -717,7 +719,7 @@ QInt QInt::operatorrol(uint32_t bit) //bit are number of bits that we want to ro
 	}
 	return *this = BinToDec(bin);
 }
-QInt QInt::operatorror(uint32_t bit) //bit are number of bits that we want to roll
+QInt QInt::operatorror(uint32_t bit) 
 {
 	bool *bin1 = new bool[bit];
 	bool *bin = this->DecToBin(); //convert into binary
