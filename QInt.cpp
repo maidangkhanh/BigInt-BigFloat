@@ -10,19 +10,19 @@
 
 using namespace std;
 
-void OneComplement(bool bin[], uint32_t size)
+void OneComplement(bool bin[], uint32_t size) // bù 1
 {
 	uint32_t i = 0;
 
 	for (; i < size; i++)
-		bin[i] = !bin[i];
+		bin[i] = !bin[i]; // not từng bit
 }
 
-void TwoComplement(bool bin[], uint32_t size)
+void TwoComplement(bool bin[], uint32_t size) // bù 2
 {
 	uint32_t i = 0;
 
-	OneComplement(bin, size);
+	OneComplement(bin, size); // lấy bù 1
 
 	// cộng 1
 	i = 0;
@@ -34,17 +34,17 @@ void TwoComplement(bool bin[], uint32_t size)
 	}
 }
 
-bool* SumBinary(bool* a, bool *b)
+bool* SumBinary(bool* a, bool *b) // Cộng 2 chuỗi nhị phân
 {
 	for (uint32_t i = 0; i < SIZE; i++)
 	{
-		if (a[i] && b[i])
+		if (a[i] && b[i]) // Nếu cả 2 a[i] và b[i] đều là 1
 		{
 			uint32_t j = i;
 
-			a[j] ^= b[j];
+			a[j] ^= b[j]; // a[i] + b[i]
 
-			while (a[j] == 0 && j < SIZE - 1)
+			while (a[j] == 0 && j < SIZE - 1) // Nhớ 1
 			{
 				a[j + 1] ^= 1;
 				j++;
@@ -56,20 +56,20 @@ bool* SumBinary(bool* a, bool *b)
 	return a;
 }
 
-bool IsNumber(string s)
+bool IsNumber(string s) // kiểm tra chuỗi có phải chỉ chứa kí tự số nguyên
 {
 	uint32_t i = s.front() == '-' ? 1 : 0;
 	while (i < s.length() && isdigit(s[i])) ++i;
 	return !s.empty() && i == s.length();
 }
 
-void CleanUpString(string &str)
+void CleanUpString(string &str) // rút gọn chuỗi nhị phân
 {
-	if (!str.empty() && str.front() != '-')
-		while (!str.empty() && *str.begin() == '0')
+	if (!str.empty() && str.front() != '-') // Nếu không âm
+		while (!str.empty() && *str.begin() == '0')  // Nếu bit đầu tiên của chuỗi là 0 thì xóa bit đó
 			str.erase(str.begin());
 	else
-		while (!str.empty() && *str.begin() + 1 == '0')
+		while (!str.empty() && *str.begin() + 1 == '0') // Nếu âm và bit thứ 2 của chuỗi là 0 thì xóa bit đó
 			str.erase(str.begin() + 1);
 }
 
@@ -150,7 +150,7 @@ string DivideBy2(const string &s)
 	return str;
 }
 
-void StringToBinary(string &s, bool bin[])
+void StringToBinary(string &s, bool bin[]) 
 {
 	uint32_t i = 0;
 
@@ -163,11 +163,11 @@ void StringToBinary(string &s, bool bin[])
 	}
 }
 
-string BinaryToString(bool bin[], string convert[])
+string BinaryToString(bool bin[], string convert[]) // mảng bool nhị phân chuyển thành chuỗi thập phân
 {
 	string s;
 
-	if (bin[SIZE - 1] == 1)
+	if (bin[SIZE - 1] == 1)  // Nếu bit cao nhất của mảng nhị phân là 1 thì chuỗi số âm
 	{
 		s.push_back('-');
 		TwoComplement(bin, SIZE);
@@ -176,7 +176,7 @@ string BinaryToString(bool bin[], string convert[])
 	string temp = "0";
 	for (uint32_t i = 0; i < SIZE - 1; i++)
 		if (bin[i])
-			temp = SumNumberString(temp, convert[i]);
+			temp = SumNumberString(temp, convert[i]); // convert tại i lưu giá
 
 	s.append(temp);
 
@@ -202,7 +202,7 @@ QInt::QInt(string decimal)
 	*this = BinToDec(bin);
 }
 
-QInt QInt::BinToDec(bool *bin)
+QInt QInt::BinToDec(bool *bin) // lưu mảng nhị phân vào Qint
 {
 	QInt x;
 
@@ -213,7 +213,7 @@ QInt QInt::BinToDec(bool *bin)
 }
 
 //Possible memory leak, remember to delete
-bool* QInt::DecToBin() const
+bool* QInt::DecToBin() const // lấy mảng nhị phân của QInt
 {
 	bool* bin = new bool[SIZE];
 
@@ -226,7 +226,7 @@ bool* QInt::DecToBin() const
 	return bin;
 }
 
-string QInt::BinToHex(bool *bin)
+string QInt::BinToHex(bool *bin) // chuyển đổi từ mảng nhị phân sang thập lục phân
 {
 	string hex;
 
@@ -239,11 +239,11 @@ string QInt::BinToHex(bool *bin)
 	uint32_t i = 0;
 	int carry = 0;
 	string temp;
-	for (; i < SIZE - 4; i+=4)
+	for (; i < SIZE - 4; i+=4) // Xét từng nhóm 4 bit
 	{
 		for (uint32_t j = 0; j < 4; j++)
 			if (bin[i + j] == 1)
-				carry += (int)(pow(2, j));
+				carry += (int)(pow(2, j)); // Lấy giá trị thập phân của nhóm 4 bit
 
 		switch (carry)
 		{
@@ -303,7 +303,7 @@ string QInt::BinToHex(bool *bin)
 	}
 
 	
-	for (uint32_t j = 0; j < 3; j++)
+	for (uint32_t j = 0; j < 3; j++) // Do có 128 bit và 1 bit dùng để biểu diễn dấu cho nên cuối cung dư lại 3 bit
 		if (bin[i + j] == 1)
 			carry += (int)(pow(2, j));
 
@@ -335,16 +335,17 @@ string QInt::BinToHex(bool *bin)
 		break; 
 	}	
 
+	//Do duyệt từ bit thấp đến cao nên kết quả sẽ bị ngược -> nghịch đảo kết quả
 	for (string::reverse_iterator rit = temp.rbegin(); rit != temp.rend(); rit++)
 		hex.push_back(*rit);
 	CleanUpString(hex);
 	return hex;
 }
 
-string QInt::DecToHex()
+string QInt::DecToHex() // Thập phân sang thập lục phân
 {
-	bool *bin = this->DecToBin();
-	string hex = BinToHex(bin);
+	bool *bin = this->DecToBin(); // chuyển sang nhị phân
+	string hex = BinToHex(bin); // nhị phân sang thập lục phân
 	delete[]bin;
 	return hex;
 }
@@ -411,10 +412,10 @@ void QInt::PrintQInt()
 
 QInt operator+ (const QInt &a, const QInt &b)
 {
-	bool *bin1 = a.DecToBin();
+	bool *bin1 = a.DecToBin(); // lấy chuỗi nhị phân của a và b
 	bool *bin2 = b.DecToBin();
 
-	QInt x =QInt::BinToDec(SumBinary(bin1, bin2));
+	QInt x = QInt::BinToDec(SumBinary(bin1, bin2)); // cộng 2 chuối nhị phan đó và lưu giá trị vào kết quả
 
 	delete[]bin1;
 	delete[]bin2;
@@ -425,8 +426,8 @@ QInt operator+ (const QInt &a, const QInt &b)
 QInt operator-(const QInt &a, const QInt &b)
 {
 	bool *bin2 = b.DecToBin();
-	TwoComplement(bin2, SIZE);
-	return a + QInt::BinToDec(bin2);
+	TwoComplement(bin2, SIZE); // lấy bù 2 của số trừ
+	return a + QInt::BinToDec(bin2); // lấy số bị trừ cộng cho âm số trừ
 }
 
 QInt operator*(const QInt &a, const QInt &b)
@@ -437,16 +438,16 @@ QInt operator*(const QInt &a, const QInt &b)
 
 	for (uint32_t i = 0; i < SIZE; i++)
 	{
-		if (bin2[i])
+		if (bin2[i]) // nếu b[i] == 1
 		{
 			uint32_t j;
 			bool bin[SIZE];
-			for (j = 0; j < i; j++)
+			for (j = 0; j < i; j++) // các bit trước i được set là 0
 				bin[j] = 0;
 			for (j = i; j < SIZE; j++)
-				bin[j] = bin1[j - i];
+				bin[j] = bin1[j - i]; // các bit từ i được set theo a[j-i] (bắt đầu từ bit nhỏ nhất tới khi bị tràn)
 
-			x = x + QInt::BinToDec(bin);
+			x = x + QInt::BinToDec(bin); // cộng các dãy bit này lại với nhau
 		}
 	}
 
@@ -461,14 +462,14 @@ QInt operator/(const QInt &a, const QInt &b)
 	bool sign = dividend[SIZE - 1] ^ divisor[SIZE - 1] ? true : false;
 	
 	if (dividend[SIZE - 1] == true)
-		TwoComplement(dividend, SIZE);
+		TwoComplement(dividend, SIZE); // lấy trị tuyệt đối
 
 	if (divisor[SIZE - 1] == true)
-		TwoComplement(divisor, SIZE);
+		TwoComplement(divisor, SIZE); // lấy trị tuyệt đối
 
 	int count = 0;
 	int i;
-	for (i = SIZE - 2; i >= 0; i--)
+	for (i = SIZE - 2; i >= 0; i--) //xác định bit 1 cao nhất
 		if (dividend[i])
 		{
 			count = i;
@@ -486,16 +487,16 @@ QInt operator/(const QInt &a, const QInt &b)
 			complement[i] = complement[i - 1];
 		}
 		dividend[0] = 0;
-		complement[0] = head;
+		complement[0] = head; //shift left số bị chia và phần bù
 
 		TwoComplement(divisor, SIZE);
-		SumBinary(complement, divisor);
+		SumBinary(complement, divisor); // lấy phần bù trừ số chia
 		TwoComplement(divisor, SIZE);
 
-		if (complement[SIZE - 1] == true)
-			SumBinary(complement, divisor);
+		if (complement[SIZE - 1] == true) //nếu phần bù âm
+			SumBinary(complement, divisor);// lấy phần bù cộng số chia
 		else
-			dividend[0] = 1;
+			dividend[0] = 1; // nếu phần bù dương ghi 1 vào kết quả
 			
 		count--;
 	}

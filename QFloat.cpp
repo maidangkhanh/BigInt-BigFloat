@@ -295,27 +295,25 @@ void QFloat::PrintQFloat()
 	}
 	string a, b;
 	val -= MAX_EXP;
-	if (val >= 0)
+	if (val >= 0) // nếu lũy thừa không âm
 	{
 		string s = "1";
 		for (int i = 0; i < val; i++)
 		{
-			s += bin_array[EXPONENT + 1 + i] + '0';
+			s += bin_array[EXPONENT + 1 + i] + '0'; // xác định giá trị nhị phân của phần nguyên
 		}
-		//cout << s << endl;
 
-		a = BinaryStringToDecimalString(s);
+		a = BinaryStringToDecimalString(s); // chuyển đổi nhị phân sang thập phân
 		b = "";
 		for (int i = EXPONENT + 1 + val; i < SIZE; i++)
 		{
-			b += bin_array[i] + '0';
+			b += bin_array[i] + '0'; // xác định giá trị nhị phân của phần thập phân
 		}
-		//cout << b << endl;
-		b = BinaryStringToFloatingPointDecimalString(b);
+		b = BinaryStringToFloatingPointDecimalString(b); // chuyển đổi nhị phân sang thập phân
 	}
 	else
 	{
-		a = "0";
+		a = "0"; // phần nguyên là 0
 		b = string(-val, '0');
 		b[-val - 1] = '1';
 		for (int i = EXPONENT; i < SIZE; i++)
