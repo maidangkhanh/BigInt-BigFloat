@@ -622,19 +622,20 @@ QInt QInt::ArithmeticShiftLeft(const QInt& a, const QInt& b)
 	QInt temp = a;
 	uint32_t max = (uint32_t)pow(2, 31);
 	temp = temp << b;
-	bool check = (a.data[0] >= max) ? true : false;
+	bool check = (a.data[0] >= max) ? true : false; // check if first bit is 1 (negative number)
 	if (check) 
 	{
-		temp.data[0] |= max;
+		temp.data[0] |= max;//if first bit is 1 or with max mask
 	}
 	else 
 	{
-		max -= 1;
-		temp.data[0] &= max;
+		max -= 1;//if first bit is 0 (positive)
+		temp.data[0] &= max;// and logic with and mask 0111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 
 	}
 	return temp;
 }
 
+//same as arithmetic shift left
 QInt QInt::ArithmeticShiftRight(const QInt& a, const QInt& b)
 {
 	QInt temp = a;
@@ -658,10 +659,11 @@ QInt QInt::operator~()
 	QInt temp;
 	for (int i = 0; i < 4; i++)
 	{
-		temp.data[i] = ~this->data[i]; // not each 32 bits
+		temp.data[i] = ~this->data[i]; // not logic each 32 bits
 	}
 	return temp;
 }
+
 QInt QInt::operator=(const QInt& a)
 {
 	if (this != &a) {
