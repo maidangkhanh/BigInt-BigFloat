@@ -16,11 +16,11 @@ using namespace std;
 
 bool isFloat(string s)
 {
-	unsigned int i = s.front() == '-' ? 1 : 0;
+	unsigned int i = s.front() == '-' ? 1 : 0; // set index
 	bool flag = false;
 	while (i < s.length() && isdigit(s[i]))
 	{
-		if ((s[i + 1] == '.') ^ (flag))
+		if ((s[i + 1] == '.') ^ (flag)) // index at '.' skip over 
 		{
 			flag = true;
 			i++;
@@ -31,7 +31,7 @@ bool isFloat(string s)
 
 }
 
-void fCleanUpString(string &str)
+void fCleanUpString(string &str) // clear 0-bits at begining of bit-string 
 {
 	if (!str.empty() && str.front() != '-')
 		while (!str.empty() && *str.begin() == '0')
@@ -98,133 +98,135 @@ string fSumNumberString(string s1, string s2)
 	return value;
 }
 
-string NaturalDecimalStringToBinaryString(string s)
+string NaturalDecimalStringToBinaryString(string s) // chuyển phần nguyên chuỗi cơ số 10 sang cơ số 2
 {
 	string result = "";
 	string temp = s;
 	while (!temp.empty()) {
 		int32_t n = temp.length();
-		result += ((temp[n - 1] - '0') % 2 ? "1" : "0");
-		temp = fDivideBy2(temp);
+		result += ((temp[n - 1] - '0') % 2 ? "1" : "0"); // lấy số dư khi chia chuỗi cho 2
+		temp = fDivideBy2(temp); // chia chuỗi cho 2
 		while (!temp.empty() && (temp[0] == '0'))
 			temp.erase(temp.begin());
 	}
-	reverse(result.begin(), result.end());
+	reverse(result.begin(), result.end()); // đảo ngược chuỗi
 	return result;
 }
 
-string FractionDecimalStringToBinaryString(string s)
+string FractionDecimalStringToBinaryString(string s) // chuyển phần thập phân chuỗi cơ số 10 sang cơ số 2
 {
 	s = '0' + s;
 	string res = "";
 	for (int i = 0; i < FRACTION; i++)
 	{
-		s = fSumNumberString(s, s);
-		res = res + s[0];
-		s[0] = '0';
+		s = fSumNumberString(s, s); // nhân 2
+		res = res + s[0];			// cộng phần nguyên của tích trên
+		s[0] = '0';					// đặt phân nguyên là 0
 	}
 	return res;
 }
 
 //possible memory leak, remember to delete
-bool* StringToFloatingPointBinary(string s)
+bool* StringToFloatingPointBinary(string s) //chuỗi cơ số 10 sang mảng nhị phân dấu chấm động
 {
 	string sign = s.front() == '-' ? "1" : "0";
 	string natural = "", fraction = "";
 	int point_pos = s.find('.');
 
-	if (point_pos == -1)
+	if (point_pos == -1) // nếu không tìm được dấu chấm
 	{
 		string temp = s;
 		if (sign == "1")
 			temp = s.substr(1);
-		natural = temp;
-		fraction = "0";
+		natural = temp; // phần nguyên là chuỗi
+		fraction = "0"; // phần thập phân là 0
 	}
 	else
 	{
-		int start = 0;
+		int start = 0; // đặt vị trí xét đầu tiên
 		if (sign == "1")
 			start = 1;
-		natural = s.substr(start, point_pos - start);
-		fraction = s.substr(point_pos + 1);
+		natural = s.substr(start, point_pos - start); // phần nguyên từ vị trí đầu đến dấu chấm
+		fraction = s.substr(point_pos + 1); // phần thập phân tính từ sau vị trí dấu chấm
 	}
 	if (natural == "") natural = "0";
 	if (fraction == "") fraction = "0";
 
-	natural = NaturalDecimalStringToBinaryString(natural);
-	fraction = FractionDecimalStringToBinaryString(fraction);
-	int shift = 0, n_bit_1_pos = natural.find("1"), f_bit_1_pos = fraction.find("1");
+	natural = NaturalDecimalStringToBinaryString(natural); // chuyển cơ số 10 sang cơ số 2
+	fraction = FractionDecimalStringToBinaryString(fraction);// chuyển cơ số 10 sang sơ số 2
 
-	if (n_bit_1_pos != -1)
+	int shift = 0;
+	int n_bit_1_pos = natural.find("1"); // tìm vị trí xuất hiện đầu tiên của 1-bit trong chuỗi nguyên
+	int f_bit_1_pos = fraction.find("1");// tìm vị trí xuất hiện đầu tiên của 1-bit trong chuỗi thập phân
+
+	if (n_bit_1_pos != -1) //nếu tìm thấy 1-bit trong chuỗi nguyên
 	{
-		shift = natural.length() - n_bit_1_pos - 1;
-		fraction = natural.substr(n_bit_1_pos + 1) + fraction;
+		shift = natural.length() - n_bit_1_pos - 1; // độ dời dấu chấm động
+		fraction = natural.substr(n_bit_1_pos + 1) + fraction; // cập nhật phần thập phân sau khi dời dấu chấm động
 	}
-	else
+	else // nếu phần nguyên là 0
 	{
-		if (f_bit_1_pos == -1)
+		if (f_bit_1_pos == -1) // nếu phần thập phân là 0
 		{
 			bool *zero = new bool[SIZE];
 			for (int i = 0; i < SIZE; i++)
 				zero[i] = 0;
-			return zero;
+			return zero; // trả về 0
 		}
-		fraction.erase(0, f_bit_1_pos + 1);
-		shift = -(f_bit_1_pos + 1);
+		fraction.erase(0, f_bit_1_pos + 1); // dịch 1-bit đầu tiên sang phần nguyên
+		shift = -(f_bit_1_pos + 1); // cập nhật độ dời dấu chấm động
 	}
 
-	string exponent = NaturalDecimalStringToBinaryString(to_string(shift + MAX_EXP));
+	string exponent = NaturalDecimalStringToBinaryString(to_string(shift + MAX_EXP)); // tạo chuỗi số mũ dựa trên độ dời dấu chấm động
 
-	if (exponent.length() < EXPONENT)
+	if (exponent.length() < EXPONENT) // có thể độ dài chuỗi ngắn hơn 1 so với độ dài qui định
 		exponent = "0" + exponent;
 	
-	fraction.resize(FRACTION, '0');
+	fraction.resize(FRACTION, '0'); // độ dài phần trị có thể ngắn hoặc dài hơn qui định, nếu ngắn hơn thì phần được chèn vào mang giá trị 0
 
-	string bin = (sign + exponent + fraction);
+	string bin = (sign + exponent + fraction); // tổng hợp chuỗi
 
 	bool* bit = new bool[SIZE];
 
 	for (int i = 0; i < SIZE; i++)
-		bit[i] = bin[i] == '0' ? 0 : 1;
+		bit[i] = bin[i] == '0' ? 0 : 1; // chuyển thành mảng bool
 	
 	return bit;
 }
 
-string BinaryStringToDecimalString(string x) {
+string BinaryStringToDecimalString(string x) //chuyển phần nguyên chuỗi cơ số 2 sang cơ số 10
+{
 	int len = x.length();
-	string pow2 = "1";
-	string val = "0";
+	string pow2 = "1"; // giá trị của 1-bit ở vị trí <i>
+	string val = "0"; // kết quả của chuỗi sau khi chuyển đổi
 	for (int i = len - 1; i >= 0; i--)
 	{
-		if (x[i] == '1')
-			val = fSumNumberString(val, pow2);
-		pow2 = fSumNumberString(pow2, pow2);
+		if (x[i] == '1') // nếu tại i la 1-bit
+			val = fSumNumberString(val, pow2); // kết quả cộng thêm giá trị của 1-bit ở vị trí <i>
+		pow2 = fSumNumberString(pow2, pow2); // giá trị của 1-bit ở vị trí <i>  = 2* giá trị của 1-bit ở vị trí <i-1>
 	}
 	return val;
 }
 
-string BinaryStringToFloatingPointDecimalString(string b) 
+string BinaryStringToFloatingPointDecimalString(string b) // chuyển phần thập phân chuỗi cơ số 2 sang cơ số 10
 {
 	int len = b.length();
-	string temp = "5";
-	vector<string> arr;
+	string temp = "5"; // lưu giữ giá trị thặp phân
+	vector<string> arr; // mảng tổng hợp giá trị thập phân chuyển đổi được
 	for (int i = 0; i < len; i++)
 	{
-		if (b[i] == '1')
-		{
-			arr.push_back(temp);
-		}
-		temp = fDivideBy2(temp+"0");
+		if (b[i] == '1') // nếu tại <i> là 1-bit
+			arr.push_back(temp); // lưu giữ giá trị của 2^(-i)
+		temp = fDivideBy2(temp+"0"); // 2^(-i) = 2^(-i+1) / 2
 	}
-	int len_max = 0;
+	int len_max = 0; // độ dài tối đa của phần thập phân
 	if (!arr.empty())
 		len_max = arr[arr.size() - 1].length();
 	string res = "0";
 	for (unsigned int i = 0; i < arr.size(); i++)
 	{
 		arr[i].resize(len_max, '0');
-		res = fSumNumberString(res, arr[i]);
+		res = fSumNumberString(res, arr[i]); // cộng các giá trị thập phân đã lưu trữ
 	}
 	return res;
 }
@@ -294,7 +296,7 @@ void QFloat::PrintQFloat()
 		pow2 *= 2;
 	}
 	string a, b;
-	val -= MAX_EXP;
+	val -= MAX_EXP; // phần lũy thừa
 	if (val >= 0) // nếu lũy thừa không âm
 	{
 		string s = "1";
@@ -314,19 +316,19 @@ void QFloat::PrintQFloat()
 	else
 	{
 		a = "0"; // phần nguyên là 0
-		b = string(-val, '0');
-		b[-val - 1] = '1';
+		b = string(-val, '0'); // di chuyển dấu chấm động
+		b[-val - 1] = '1'; // bit trước dấu chấm động là 1-bit
 		for (int i = EXPONENT; i < SIZE; i++)
 		{
-			b += bin_array[i] + '0';
+			b += bin_array[i] + '0';// xác định giá trị nhị phân của phần thập phân
 		}
-		b = BinaryStringToFloatingPointDecimalString(b);
+		b = BinaryStringToFloatingPointDecimalString(b);// chuyển đổi cơ số 2 sang cơ số 10
 	}
 	cout << (bin_array[0] == true ? "-" : "") << a << "." << b;
 	delete[] bin_array;
 }
 
-bool QFloat::isZero()
+bool QFloat::isZero() // kiểm tra số 0
 {
 	bool *bit = new bool[SIZE];
 	bit = this->DecToBin();
@@ -344,7 +346,7 @@ bool QFloat::isZero()
 	return true;
 }
 
-bool QFloat::isINF()
+bool QFloat::isINF() // kiểm tra số vô cực
 {
 	bool *bit = new bool[SIZE];
 	bit = this->DecToBin();
@@ -362,7 +364,7 @@ bool QFloat::isINF()
 	return true;
 }
 
-bool QFloat::isNaN()
+bool QFloat::isNaN() // kiểm tra Not a Number
 {
 	bool *bit = new bool[SIZE];
 	bit = this->DecToBin();
@@ -380,7 +382,7 @@ bool QFloat::isNaN()
 	return false;
 }
 
-bool QFloat::isDenormalisedNum()
+bool QFloat::isDenormalisedNum() // kiểm tra số không chuẩn
 {
 	bool *bit = new bool[SIZE];
 	bit = this->DecToBin();
@@ -399,7 +401,7 @@ bool QFloat::isDenormalisedNum()
 }
 
 
-bool QFloat::isSpecialNum()
+bool QFloat::isSpecialNum() // kiểm tra số đặc biệt
 {
 	bool isSpecial = false;
 	if (this->isZero())

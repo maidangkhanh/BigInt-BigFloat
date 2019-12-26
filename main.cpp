@@ -28,23 +28,7 @@ int main(int argc, char *argv[])
 
 	}
 
-	if (argc == 0)
-	{
-		cout << "1. QInt\n2. QFloat\n";
-		int choice = 0;
-		while (choice != 1 && choice != 2)
-		{
-			cout << "Choose your data mode: ";
-			cin >> choice;
-			cin.ignore();
-		}
-
-		if (choice == 1)		
-			ExcuteQInt();
-		
-		else if (choice == 2)
-			ExcuteQFloat();
-	}
+	
 
 
 	system("pause");
