@@ -230,16 +230,16 @@ string QInt::BinToHex(bool *bin) // chuyển đổi từ mảng nhị phân sang
 {
 	string hex;
 
-	if (bin[SIZE - 1] == 1)
+	/*if (bin[SIZE - 1] == 1)
 	{
 		hex.push_back('-');
 		TwoComplement(bin,SIZE);
-	}
+	}*/
 
 	uint32_t i = 0;
 	int carry = 0;
 	string temp;
-	for (; i < SIZE - 4; i+=4) // Xét từng nhóm 4 bit
+	for (; i < SIZE; i+=4) // Xét từng nhóm 4 bit
 	{
 		for (uint32_t j = 0; j < 4; j++)
 			if (bin[i + j] == 1)
@@ -303,37 +303,8 @@ string QInt::BinToHex(bool *bin) // chuyển đổi từ mảng nhị phân sang
 	}
 
 	
-	for (uint32_t j = 0; j < 3; j++) // Do có 128 bit và 1 bit dùng để biểu diễn dấu cho nên cuối cung dư lại 3 bit
-		if (bin[i + j] == 1)
-			carry += (int)(pow(2, j));
 
-	switch (carry)
-	{
-	case 0: 
-		temp.push_back('0');
-		break; 
-	case 1: 
-		temp.push_back('1');
-		break; 
-	case 2: 
-		temp.push_back('2');
-		break; 
-	case 3: 
-		temp.push_back('3');
-		break; 
-	case 4: 
-		temp.push_back('4');
-		break; 
-	case 5: 
-		temp.push_back('5');
-		break; 
-	case 6: 
-		temp.push_back('6');
-		break; 
-	case 7: 
-		temp.push_back('7');
-		break; 
-	}	
+
 
 	//Do duyệt từ bit thấp đến cao nên kết quả sẽ bị ngược -> nghịch đảo kết quả
 	for (string::reverse_iterator rit = temp.rbegin(); rit != temp.rend(); rit++)

@@ -292,7 +292,8 @@ void QFloat::PrintQFloat()
 	int pow2 = 1, val = 0;
 	for (int i = EXPONENT; i > 0; i--)
 	{
-		val += pow2 * bin_array[i];
+		if (bin_array[i])
+			val += pow2;
 		pow2 *= 2;
 	}
 	string a, b;
@@ -411,12 +412,7 @@ bool QFloat::isSpecialNum() // kiểm tra số đặc biệt
 	}
 	else if (this->isINF())
 	{
-		cout << "INF";
-		isSpecial = true;
-	}
-	else if (this->isDenormalisedNum())
-	{
-		cout << "Denormalised Number";
+		cout << "Infinity";
 		isSpecial = true;
 	}
 	else if (this->isNaN())
@@ -424,6 +420,11 @@ bool QFloat::isSpecialNum() // kiểm tra số đặc biệt
 		cout << "NaN";
 		isSpecial = true;
 
+	}
+	else if (this->isDenormalisedNum())
+	{
+		cout << "Dernomalised number";
+		isSpecial = true;
 	}
 	return isSpecial;
 }
