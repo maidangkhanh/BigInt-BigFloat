@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-using namespace std;
+//using namespace std;
 class QInt {
 
 public:
@@ -30,7 +30,7 @@ public:
 	bool operator==(const QInt& a);
 	QInt operatorrol(uint32_t bit);
 	QInt operatorror(uint32_t bit);
-	unsigned int getModeFromString(string a);
+	unsigned int getModeFromString(std::string a);
 private:
 	uint32_t data[4];
 	unsigned int mode;
@@ -42,7 +42,7 @@ QInt operator-(const QInt &a, const QInt &b);
 QInt operator*(const QInt &a, const QInt &b);
 QInt operator/(const QInt &a, const QInt &b);
 
-vector<string> ReadFromFile(string filename);
+std::vector<std::string> ReadFromFile(std::string filename);
 
-void ExcuteQInt(string, string);
+void ExcuteQInt(std::string, std::string);
 void ExcuteQInt();

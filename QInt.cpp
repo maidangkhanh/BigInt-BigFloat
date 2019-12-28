@@ -847,9 +847,9 @@ QInt caculateInQInt(QInt x, QInt y, string _operator)
 	else if (_operator == "~")
 		return ~x;
 	else if (_operator == ">>")
-		return x >> y;
-	else if (_operator == "<<")
-		return x << y;
+		return x.ArithmeticShiftLeft(x,y);
+
+	return x.ArithmeticShiftRight(x, y);
 }
 
 void numberCalculator(string a, string b, string c, string d)
@@ -860,23 +860,62 @@ void numberCalculator(string a, string b, string c, string d)
 		bool *bit = BinaryStringToBinaryBit(b);
 		x = QInt::BinToDec(bit);
 		delete[]bit;
-		bit = BinaryStringToBinaryBit(d);
-		x = QInt::BinToDec(bit);
-		caculateInQInt(x, y, c).PrintQInt();
+		if (c == "rol" || c == "ror")
+		{
+			int y = stoi(d);
+			if (c == "ror")	 x = x.operatorror(y);
+			else x = x.operatorrol(y);
+			bit = x.DecToBin();
+			for (int i = 0; i < SIZE; i++)
+				cout << bit[i];
+			cout << endl;
+			return;
+		}
+		else
+		{
+			bit = BinaryStringToBinaryBit(d);
+			x = QInt::BinToDec(bit);
+			delete[]bit;
+			caculateInQInt(x, y, c).PrintQInt();
+		}
+
 	}
 	else if (a == "10")
 	{
 		x.ScanQInt(b);
-		y.ScanQInt(d);
-		caculateInQInt(x, y, c).PrintQInt();
+		if (c == "rol"|| c== "ror")
+		{
+			int y = stoi(d);
+			if (c == "ror")	 x = x.operatorror(y);
+			else x = x.operatorrol(y);
+			x.PrintQInt();
+			return;
+		}
+		else
+		{
+			y.ScanQInt(d);
+			caculateInQInt(x, y, c).PrintQInt();
+		}
 	}
 	else if (a == "16")
 	{
 		x = hexStrToQInt(b);
-		y = hexStrToQInt(d);
-		string res;
-		res = caculateInQInt(x, y, c).DecToHex();
-		cout << res;
+		if (c == "rol" || c == "ror")
+		{
+			int y = stoi(d);
+			if (c == "ror")	 x = x.operatorror(y);
+			else x = x.operatorrol(y);
+			string res = x.DecToHex();
+			cout << res;
+			return;
+		}
+		else
+		{
+			y = hexStrToQInt(d);
+			string res;
+			res = caculateInQInt(x, y, c).DecToHex();
+			cout << res;
+		}
 	}
 }
 
